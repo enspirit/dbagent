@@ -47,7 +47,7 @@ namespace :db do
   task :migrate => :require do
     Sequel.extension :migration
     if (sf = MIGRATIONS_FOLDER/'superuser').exists?
-      Sequel::Migrator.run(SUPERUSER_DATABASE, , table: 'superuser_migrations')
+      Sequel::Migrator.run(SUPERUSER_DATABASE, table: 'superuser_migrations')
     end
     Sequel::Migrator.run(SEQUEL_DATABASE, MIGRATIONS_FOLDER)
   end
