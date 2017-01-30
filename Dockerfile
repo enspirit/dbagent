@@ -29,6 +29,7 @@ ADD config/postgres-env.conf /etc/nginx/main.d/postgres-env.conf
 # Install the app
 RUN mkdir -p /home/app/public
 COPY . /home/app
+RUN cd /home/app && bundle install
 
 # I'm the maintainer!
 MAINTAINER blambeau@enspirit.be
