@@ -1,5 +1,8 @@
 FROM phusion/passenger-ruby23
 
+# I'm the maintainer!
+MAINTAINER blambeau@enspirit.be
+
 # Set correct environment variables and workdir
 ENV HOME /home/app
 WORKDIR /home/app
@@ -21,18 +24,15 @@ RUN cd /home/app && bundle install
 # Start nginx
 RUN rm -f /etc/service/nginx/down
 
-# Install nginx configuration
-RUN rm /etc/nginx/sites-enabled/default
-ADD config/webapp.conf /etc/nginx/sites-enabled/webapp.conf
-ADD config/postgres-env.conf /etc/nginx/main.d/postgres-env.conf
-
 # Install the app
 RUN mkdir -p /home/app/public
 COPY . /home/app
 RUN cd /home/app && bundle install
 
-# I'm the maintainer!
-MAINTAINER blambeau@enspirit.be
+# Install nginx configuration
+RUN rm /etc/nginx/sites-enabled/default
+ADD config/webapp.conf /etc/nginx/sites-enabled/webapp.conf
+ADD config/postgres-env.conf /etc/nginx/main.d/postgres-env.conf
 
 # Use baseimage-docker's init process.
 CMD ["/sbin/my_init"]
