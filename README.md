@@ -29,6 +29,9 @@ rake db:rebuild      # Rebuilds the database from scratch (USE WITH CARE)
 rake db:repl         # Opens a database REPL
 rake db:seed[from]   # Seeds the database with a particular data set
 rake db:spy          # Dumps the schema documentation into database/schema
+rake db:backup       # Makes a database backup to the backups folder
+rake db:restore      # Restore the last database backup from backups folder
+rake db:revive       # Shortcut for both db:restore and db:migrate
 ```
 
 ## Available webservices

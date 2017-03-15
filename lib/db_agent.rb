@@ -3,6 +3,9 @@ require 'sequel'
 require 'sinatra'
 module DbAgent
 
+  # Current version of DbAgent
+  VERSION = "1.1.0"
+
   # Simply checks that a path exists of raise an error
   def self._!(path)
     Path(path).tap do |p|
@@ -13,9 +16,6 @@ module DbAgent
   # Root folder of the project structure
   ROOT_FOLDER = Path.backfind('.[Gemfile]') or raise("Missing Gemfile")
 
-  # Simple pointer to the config folder
-  CONFIG_FOLDER = _!(ROOT_FOLDER/'config')
-
   # Folder containing database migrations
   MIGRATIONS_FOLDER = _!(ROOT_FOLDER/'migrations')
 
@@ -25,8 +25,8 @@ module DbAgent
   # Folder containing database data files
   DATA_FOLDER = _!(ROOT_FOLDER/'data')
 
-  # Database configuration file
-  DATABASE_CONFIG_FILE = CONFIG_FOLDER/'database.yml'
+  # Folder containing database data files
+  BACKUP_FOLDER = _!(ROOT_FOLDER/'backups')
 
   # What database configuration to use for normal access
   DATABASE_CONFIG = {

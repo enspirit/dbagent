@@ -40,8 +40,23 @@ namespace :db do
           pg_cmd("createdb","--owner=#{DATABASE_CONFIG[:user]}", DATABASE_CONFIG[:database])
   end
 
+  desc "Dump a database backup"
+  task :backup => :require do
+    datetime = Time.now.strftime("%Y%m%dT%H%M%S")
+    shell pg_cmd("pg_dump", "--clean", "> #{BACKUP_FOLDER}/backup-#{datetime}.sql")
+  end
+
+  desc "Restore from the last database backup"
+  task :restore => :require do
+    file = BACKUP_FOLDER.glob("*.sql").sort.last
+    shell pg_cmd('psql', DATABASE_CONFIG[:database], '<', file.to_s)
+  end
+
   desc "Rebuilds the database from scratch (USE WITH CARE)"
   task :rebuild => [ :drop, :create, :migrate ]
+
+  desc "Revive the database from the last backup"
+  task :revive => [ :restore, :migrate ]
 
   desc "Runs migrations on the current database"
   task :migrate => :require do
