@@ -31,25 +31,29 @@ module DbAgent
   # What database configuration to use for normal access
   DATABASE_CONFIG = {
     adapter:  ENV['DBAGENT_ADAPTER'] || 'postgres',
-    host:     ENV['DBAGENT_HOST']    || 'postgres',
     port:     ENV['DBAGENT_PORT']    || 5432,
     database: ENV['DBAGENT_DB']      || 'postgres',
     user:     ENV['DBAGENT_USER']    || 'postgres',
     password: ENV['DBAGENT_PASSWORD']
   }
 
+  # Favor a socket approach if specified, otherwise fallback to
+  # host with default to postgres
+  if socket = ENV['DBAGENT_SOCKET']
+    DATABASE_CONFIG[:socket] = socket
+  else
+    DATABASE_CONFIG[:host] = ENV['DBAGENT_HOST'] || 'postgres'
+  end
+
   # Sequel database object (for connection pooling)
   SEQUEL_DATABASE = ::Sequel.connect(DATABASE_CONFIG)
 
   # What database configuration to use for superuser access
-  SUPERUSER_CONFIG = {
-    adapter:  DATABASE_CONFIG[:adapter],
-    host:     DATABASE_CONFIG[:host],
-    port:     DATABASE_CONFIG[:port],
+  SUPERUSER_CONFIG = DATABASE_CONFIG.merge({
     user:     ENV['DBAGENT_SUPER_USER']     || DATABASE_CONFIG[:user],
     database: ENV['DBAGENT_SUPER_DB']       || DATABASE_CONFIG[:database],
     password: ENV['DBAGENT_SUPER_PASSWORD'] || DATABASE_CONFIG[:password]
-  }
+  })
 
   # Sequel database for superuser
   SUPERUSER_DATABASE = ::Sequel.connect(SUPERUSER_CONFIG)
