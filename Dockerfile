@@ -10,7 +10,7 @@ WORKDIR /home/app
 # Install a few handy tools
 RUN apt-get update
 RUN apt-get install -y vim
-RUN apt-get install -y postgresql-client-9.5
+RUN apt-get install -y postgresql-client-9.5 --fix-missing
 RUN apt-get install -y default-jre
 RUN apt-get install -y graphviz
 

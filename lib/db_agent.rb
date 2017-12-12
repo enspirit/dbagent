@@ -4,7 +4,7 @@ require 'sinatra'
 module DbAgent
 
   # Current version of DbAgent
-  VERSION = "1.1.0"
+  VERSION = "1.1.1"
 
   # Simply checks that a path exists of raise an error
   def self._!(path)
