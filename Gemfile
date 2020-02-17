@@ -6,6 +6,7 @@ gem 'rake', '~> 10.0'
 gem 'path', '~> 1.3'
 gem 'rack', '~> 1.5'
 gem 'sinatra', '~> 1.4'
+gem 'net-ping'
 
 group :development do
   gem 'rspec', '~> 3.0'

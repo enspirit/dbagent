@@ -13,6 +13,7 @@ RUN apt-get install -y vim
 RUN apt-get install -y postgresql-client-9.5 --fix-missing
 RUN apt-get install -y default-jre
 RUN apt-get install -y graphviz
+RUN apt-get install -y iputils-ping
 
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

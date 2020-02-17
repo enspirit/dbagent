@@ -28,6 +28,26 @@ namespace :db do
     puts "Everything seems fine!"
   end
 
+  desc "Waits for the database server to ping, up to 15 seconds"
+  task :wait_server => :require do
+    require 'net/ping'
+    raise "No host found" unless DATABASE_CONFIG[:host]
+    check = Net::Ping::External.new(DATABASE_CONFIG[:host])
+    puts "Trying to ping `#{DATABASE_CONFIG[:host]}`"
+    15.downto(0) do |i|
+      print "."
+      if check.ping?
+        print "\nServer found.\n"
+        break
+      elsif i == 0
+        print "\n"
+        raise "Server not found, I give up."
+      else
+        sleep(1)
+      end
+    end
+  end
+
   desc "Waits for the database to ping, up to 15 seconds"
   task :wait => :require do
     15.downto(0) do |i|
