@@ -28,6 +28,21 @@ namespace :db do
     puts "Everything seems fine!"
   end
 
+  desc "Waits for the database to ping, up to 15 seconds"
+  task :wait => :require do
+    15.downto(0) do |i|
+      begin
+        puts "Using #{DATABASE_CONFIG}"
+        SEQUEL_DATABASE.test_connection
+        puts "Database is there. Great."
+        break
+      rescue Sequel::Error
+        raise if i==0
+        sleep(1)
+      end
+    end
+  end
+
   desc "Drops the user & database (USE WITH CARE)"
   task :drop => :require do
     shell pg_cmd("dropdb", DATABASE_CONFIG[:database]),
