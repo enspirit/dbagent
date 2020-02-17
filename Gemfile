@@ -9,6 +9,7 @@ gem 'sinatra', '~> 1.4'
 gem 'net-ping'
 
 group :development do
+  gem 'bundler', '~> 2.0'
   gem 'rspec', '~> 3.0'
   gem 'rack-test', '~> 0.6'
 end
