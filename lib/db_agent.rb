@@ -14,7 +14,11 @@ module DbAgent
   end
 
   # Root folder of the project structure
-  ROOT_FOLDER = Path.backfind('.[Gemfile]') or raise("Missing Gemfile")
+  ROOT_FOLDER = if ENV['DBAGENT_ROOT_FOLDER']
+    _!(ENV['DBAGENT_ROOT_FOLDER'])
+  else
+    Path.backfind('.[Gemfile]') or raise("Missing Gemfile")
+  end
 
   # Folder containing database migrations
   MIGRATIONS_FOLDER = _!(ROOT_FOLDER/'migrations')
@@ -30,11 +34,12 @@ module DbAgent
 
   # What database configuration to use for normal access
   DATABASE_CONFIG = {
-    adapter:  ENV['DBAGENT_ADAPTER'] || 'postgres',
-    port:     ENV['DBAGENT_PORT']    || 5432,
-    database: ENV['DBAGENT_DB']      || 'postgres',
-    user:     ENV['DBAGENT_USER']    || 'postgres',
-    password: ENV['DBAGENT_PASSWORD']
+    adapter:  ENV['DBAGENT_ADAPTER']  || 'postgres',
+    port:     ENV['DBAGENT_PORT']     || 5432,
+    database: ENV['DBAGENT_DB']       || 'suppliers-and-parts',
+    user:     ENV['DBAGENT_USER']     || 'dbagent',
+    password: ENV['DBAGENT_PASSWORD'] || 'dbagent',
+    test:     false
   }
 
   # Favor a socket approach if specified, otherwise fallback to
@@ -42,7 +47,7 @@ module DbAgent
   if socket = ENV['DBAGENT_SOCKET']
     DATABASE_CONFIG[:socket] = socket
   else
-    DATABASE_CONFIG[:host] = ENV['DBAGENT_HOST'] || 'postgres'
+    DATABASE_CONFIG[:host] = ENV['DBAGENT_HOST'] || 'localhost'
   end
 
   # Sequel database object (for connection pooling)

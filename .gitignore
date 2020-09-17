@@ -1,4 +1,5 @@
-/.bundle
+**/.bundle
+**/vendor/bundle
 /bin
-volumes
-/vendor/bundle
+**/volumes
+**/schema/spy

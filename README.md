@@ -41,3 +41,31 @@ GET  /schema/                # Browser the database schema (requires a former `r
 POST /seeds/install?id=...   # Install a particular dataset, id is the name of a folder in `data` folder
 POST /seeds/flush?id=...     # Flushes the current database content as a named dataset
 ```
+
+## Hacking on dbagent
+
+### Installing the library
+
+```
+bundle install
+```
+
+### Preparing your computer
+
+The tests require a valid PostgreSQL installation with the suppliers-and-parts
+database installed. A `dbagent` user would be needed on the PostgreSQL installation
+to bootstrap the process.
+
+```
+sudo su postgres -c 'createuser --createdb dbagent -P'
+```
+
+DbAgent tries to connect to the suppliers-and-parts with a dbagent/dbagent user/password
+pair by default. If you change the database name, user, or password please adapt the
+environment variables accordingly in the commands below.
+
+### Installing the example database
+
+```
+DBAGENT_ROOT_FOLDER=examples/suppliers-and-parts bundle exec rake db:create db:migrate db:seed['base']
+```
