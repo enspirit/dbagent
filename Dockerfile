@@ -1,39 +1,29 @@
-FROM phusion/passenger-ruby23
+FROM ruby:2.7
 
-# I'm the maintainer!
-MAINTAINER blambeau@enspirit.be
+ENV LANG C.UTF-8
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-# Set correct environment variables and workdir
+RUN addgroup --gid 1000 --system app \
+  && adduser --uid 1000 --system --gid 1000 app \
+  && mkdir -p /home/app \
+  && chown app:app -R /home/app
+
 ENV HOME /home/app
 WORKDIR /home/app
 
-# Install a few handy tools
-RUN apt-get update
-RUN apt-get install -y vim
-RUN apt-get install -y postgresql-client --fix-missing
-RUN apt-get install -y default-jre
-RUN apt-get install -y graphviz
-RUN apt-get install -y iputils-ping
+RUN  apt-get update \
+  && apt-get install -qq --no-install-recommends --fix-missing \
+      vim \
+      postgresql-client \
+      default-jre \
+      graphviz \
+      iputils-ping  \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Clean up APT when done.
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-# Install dependencies through bundler
-COPY Gemfile /home/app
+COPY --chown=app:app Gemfile Gemfile.lock /home/app/
 RUN cd /home/app && bundle install
 
-# Start nginx
-RUN rm -f /etc/service/nginx/down
+COPY --chown=app:app . /home/app
 
-# Install the app
-RUN mkdir -p /home/app/public
-COPY . /home/app
-RUN cd /home/app && bundle install
-
-# Install nginx configuration
-RUN rm /etc/nginx/sites-enabled/default
-ADD config/webapp.conf /etc/nginx/sites-enabled/webapp.conf
-ADD config/postgres-env.conf /etc/nginx/main.d/postgres-env.conf
-
-# Use baseimage-docker's init process.
-CMD ["/sbin/my_init"]
+CMD bundle exec rackup -p 80
