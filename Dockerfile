@@ -26,4 +26,4 @@ RUN cd /home/app && bundle install
 
 COPY --chown=app:app . /home/app
 
-CMD bundle exec rackup -p 80
+CMD bundle exec rackup -p 80 -o 0.0.0.0
