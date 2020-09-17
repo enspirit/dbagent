@@ -1,3 +1,10 @@
+# 2.1.0
+
+* db:restore now support an optional argument to list the
+  candidate backup files, based on a word:
+
+      rake db:restore[production]
+
 # 2.0.0
 
 * The default environment variables are set to connect to

@@ -82,10 +82,15 @@ namespace :db do
   end
 
   desc "Restore from the last database backup"
-  task :restore => :require do
-    file = BACKUP_FOLDER.glob("*.sql").sort.last
+  task :restore, :pattern do |t,args|
+    candidates = BACKUP_FOLDER.glob("*.sql").sort
+    if args[:pattern] && rx = Regexp.new(args[:pattern])
+      candidates = candidates.select{|f| f.basename.to_s =~ rx }
+    end
+    file = candidates.last
     shell pg_cmd('psql', DATABASE_CONFIG[:database], '<', file.to_s)
   end
+  task :restore => :require
 
   desc "Rebuilds the database from scratch (USE WITH CARE)"
   task :rebuild => [ :drop, :create, :migrate ]

@@ -19,19 +19,19 @@ See the examples folder for details.
 The following rake tasks helps you managing the database. They must typically be executed on the docker container.
 
 ```
-rake db:check-seeds  # Checks that all seeds can be installed correctly
-rake db:create       # Creates an fresh new user & database (USE WITH CARE)
-rake db:drop         # Drops the user & database (USE WITH CARE)
-rake db:flush[to]    # Flushes the database as a particular data set
-rake db:migrate      # Runs migrations on the current database
-rake db:ping         # Pings the database, making sure everything's ready for migration
-rake db:rebuild      # Rebuilds the database from scratch (USE WITH CARE)
-rake db:repl         # Opens a database REPL
-rake db:seed[from]   # Seeds the database with a particular data set
-rake db:spy          # Dumps the schema documentation into database/schema
-rake db:backup       # Makes a database backup to the backups folder
-rake db:restore      # Restore the last database backup from backups folder
-rake db:revive       # Shortcut for both db:restore and db:migrate
+rake db:check-seeds    # Checks that all seeds can be installed correctly
+rake db:create         # Creates an fresh new user & database (USE WITH CARE)
+rake db:drop           # Drops the user & database (USE WITH CARE)
+rake db:flush[to]      # Flushes the database as a particular data set
+rake db:migrate        # Runs migrations on the current database
+rake db:ping           # Pings the database, making sure everything's ready for migration
+rake db:rebuild        # Rebuilds the database from scratch (USE WITH CARE)
+rake db:repl           # Opens a database REPL
+rake db:seed[from]     # Seeds the database with a particular data set
+rake db:spy            # Dumps the schema documentation into database/schema
+rake db:backup         # Makes a database backup to the backups folder
+rake db:restore[match] # Restore the last matching database backup file from backups folder
+rake db:revive         # Shortcut for both db:restore and db:migrate
 ```
 
 ## Available webservices
