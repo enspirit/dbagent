@@ -23,6 +23,10 @@
   the public interface did not change (rake commands, web
   services).
 
+* the backups/ and schema/ folders are now part of the
+  base images (as empty folders). This might break an
+  existing Dockerfile that mkdir them without the -p flag.
+
 # 1.x
 
 DbAgent first version.
