@@ -23,9 +23,14 @@
   the public interface did not change (rake commands, web
   services).
 
-* the backups/ and schema/ folders are now part of the
+* The backups/ and schema/ folders are now part of the
   base images (as empty folders). This might break an
   existing Dockerfile that mkdir them without the -p flag.
+
+* Since Sequel dependency has been upgraded to ">= 5", some
+  migrations may be broken (if they use the fact that the `up`
+  method received the db as argument). Simply use `self`
+  instead of `db` and all should be fine.
 
 # 1.x
 
