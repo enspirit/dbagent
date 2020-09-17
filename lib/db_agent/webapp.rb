@@ -6,12 +6,12 @@ module DbAgent
     set :dump_errors, true
 
     get '/ping' do
-      SEQUEL_DATABASE.test_connection  
+      SEQUEL_DATABASE.test_connection
       status 200
       "ok"
     end
 
-    get %r{^/schema/?$} do
+    get %r{/schema/?} do
       send_file(SCHEMA_FOLDER/'spy/index.html')
     end
 

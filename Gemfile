@@ -1,15 +1,14 @@
 source 'http://rubygems.org'
 
-gem 'sequel', "~> 4.12"
-gem 'pg', '~> 0.17'
-gem 'rake', '~> 10.0'
-gem 'path', '~> 1.3'
-gem 'rack', '~> 1.5'
-gem 'sinatra', '~> 1.4'
+gem 'sequel', "~> 5"
+gem 'pg', '~> 1'
+gem 'rake', '~> 13'
+gem 'path', '~> 2'
+gem 'sinatra', '~> 2'
 gem 'net-ping'
 
 group :development do
-  gem 'bundler', '~> 2.0'
-  gem 'rspec', '~> 3.0'
-  gem 'rack-test', '~> 0.6'
+  gem 'bundler', '~> 2'
+  gem 'rspec', '~> 3'
+  gem 'rack-test', '~> 1'
 end
