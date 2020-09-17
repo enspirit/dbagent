@@ -65,4 +65,5 @@ module DbAgent
 
 end # module DbAgent
 require 'db_agent/seeder'
+require 'db_agent/table_orderer'
 require 'db_agent/webapp'

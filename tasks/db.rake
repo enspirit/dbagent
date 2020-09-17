@@ -137,4 +137,10 @@ namespace :db do
   end
   task :flush => :require
 
+  desc "Shows what tables depend on a given one"
+  task :dependencies, :of do |t,args|
+    puts TableOrderer.new.dependencies(args[:of].to_sym).reverse
+  end
+  task :dependencies => :require
+
 end

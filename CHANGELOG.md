@@ -5,6 +5,10 @@
 
       rake db:restore[production]
 
+* db:dependencies[table] lists all tables that depends on
+  the given table, or of a table that depends on it, based
+  on foreign keys.
+
 # 2.0.0
 
 * The default environment variables are set to connect to
