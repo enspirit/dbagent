@@ -1,4 +1,4 @@
-# 2.1.0
+# 2.1.0 - 2020/09/17
 
 * db:restore now support an optional argument to list the
   candidate backup files, based on a word:
@@ -9,7 +9,7 @@
   the given table, or of a table that depends on it, based
   on foreign keys.
 
-# 2.0.0
+# 2.0.0 - 2020/09/17
 
 * The default environment variables are set to connect to
   the suppliers-and-parts database on localhost, using a
