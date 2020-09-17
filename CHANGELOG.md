@@ -1,3 +1,9 @@
+# 2.1.1 - 2020/09/17
+
+* Fix Dockerfile to listen to 0.0.0.0 and not only on
+  127.0.0.1. The fix has been backported to 2.0 and 2.1
+  docker images.
+
 # 2.1.0 - 2020/09/17
 
 * db:restore now support an optional argument to list the
