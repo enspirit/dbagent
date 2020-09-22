@@ -143,4 +143,10 @@ namespace :db do
   end
   task :dependencies => :require
 
+  desc "Shows all tables in order"
+  task :tables do |t|
+    puts TableOrderer.new.tsort
+  end
+  task :tables => :require
+
 end
