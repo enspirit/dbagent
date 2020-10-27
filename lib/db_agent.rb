@@ -7,7 +7,7 @@ require 'bmg/sequel'
 module DbAgent
 
   # Current version of DbAgent
-  VERSION = "2.2.0"
+  VERSION = "2.2.1"
 
   # Simply checks that a path exists of raise an error
   def self._!(path)
