@@ -1,4 +1,5 @@
 require 'path'
+require 'logger'
 require 'sequel'
 require 'sinatra'
 require 'bmg'
@@ -34,6 +35,10 @@ module DbAgent
   # Folder containing database data files
   BACKUP_FOLDER = _!(ROOT_FOLDER/'backups')
 
+  # Logger instance to use
+  LOGGER = Logger.new(STDOUT)
+  LOGGER.level = Logger.const_get(ENV['DBAGENT_LOGLEVEL'] || 'WARN')
+
   # What database configuration to use for normal access
   DATABASE_CONFIG = {
     adapter:  ENV['DBAGENT_ADAPTER']  || 'postgres',
@@ -50,6 +55,11 @@ module DbAgent
     DATABASE_CONFIG[:socket] = socket
   else
     DATABASE_CONFIG[:host] = ENV['DBAGENT_HOST'] || 'localhost'
+  end
+
+  # Set a logger if explicitly requested
+  if ENV['DBAGENT_LOGSQL'] == 'yes'
+    DATABASE_CONFIG[:loggers] = [LOGGER]
   end
 
   # Sequel database object (for connection pooling)

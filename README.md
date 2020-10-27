@@ -16,7 +16,9 @@ See the examples folder for details.
 
 ## Available environment variables
 
-* `DBAGENT_ROOT_FOLDER`     main folder where data, migrations and viewpoints can be found
+* `DBAGENT_ROOT_FOLDER`     Main folder where data, migrations and viewpoints can be found
+* `DBAGENT_LOGLEVEL`        Log level to use for dbagent messages (defaults to `WARN`)
+* `DBAGENT_LOGSQL`          Low Sequel's SQL queries (defaults to `no`)
 * `DBAGENT_ADAPTER`         Sequel's adapter (defaults to `postgres`)
 * `DBAGENT_HOST`            Database server host (defaults to `localhost`)
 * `DBAGENT_PORT`            Database server port (defaults to `5432`)

@@ -18,9 +18,11 @@ module DbAgent
 
         # Truncate tables then fill them
         names.reverse.each do |name|
+          LOGGER.info("Emptying table `#{name}`")
           db[name.to_sym].delete
         end
         names.each do |name|
+          LOGGER.info("Filling table `#{name}`")
           file = pairs[name]
           db[name.to_sym].multi_insert(file.load)
         end
@@ -42,7 +44,10 @@ module DbAgent
       target = (DATA_FOLDER/to)
       table = file2table(f)
       data = viewpoint.send(table.to_sym).to_a
-      unless data.empty?
+      if data.empty?
+        LOGGER.debug("Skipping table `#{table}` since empty")
+      else
+        LOGGER.info("Flushing table `#{table}`")
         json = JSON.pretty_generate(data)
         (target/f.basename).write(json)
       end

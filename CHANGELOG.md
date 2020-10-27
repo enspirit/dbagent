@@ -1,5 +1,8 @@
 # 2.2.0 - 2020/10/27
 
+* Improve logging: exposing now the `DBAGENT_LOGLEVEL`
+  and `DBAGENT_LOGSQL` environment variables.
+
 * Add support for (optional) Bmg viewpoints in db:flush,
   through a viewpoints/ folder in root directory
 
