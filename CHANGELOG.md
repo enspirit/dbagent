@@ -1,3 +1,8 @@
+# 2.2.0 - 2020/10/27
+
+* Add support for (optional) Bmg viewpoints in db:flush,
+  through a viewpoints/ folder in root directory
+
 # 2.1.1 - 2020/09/17
 
 * Fix Dockerfile to listen to 0.0.0.0 and not only on

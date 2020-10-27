@@ -3,3 +3,4 @@
 /bin
 **/volumes
 **/schema/spy
+examples/suppliers-and-parts/data/tmp/

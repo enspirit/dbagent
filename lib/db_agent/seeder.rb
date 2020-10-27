@@ -41,7 +41,7 @@ module DbAgent
     def flush_seed_file(f, to = f.parent)
       target = (DATA_FOLDER/to)
       table = file2table(f)
-      data = db[table.to_sym].to_a
+      data = viewpoint.send(table.to_sym).to_a
       unless data.empty?
         json = JSON.pretty_generate(data)
         (target/f.basename).write(json)
@@ -92,6 +92,14 @@ module DbAgent
 
     def file2table(f)
       f.basename.rm_ext.to_s[/^\d+-(.*)/, 1]
+    end
+
+    def viewpoint
+      @viewpoint ||= if vp = ENV['DBAGENT_VIEWPOINT']
+        Kernel.const_get(vp).new(db)
+      else
+        Viewpoint::Base.new(db)
+      end
     end
 
   end # class Seeder

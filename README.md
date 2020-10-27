@@ -14,6 +14,21 @@ DbAgent is expected to be used as its Docker agent, available as `enspirit/dbage
 
 See the examples folder for details.
 
+## Available environment variables
+
+* `DBAGENT_ROOT_FOLDER`     main folder where data, migrations and viewpoints can be found
+* `DBAGENT_ADAPTER`         Sequel's adapter (defaults to `postgres`)
+* `DBAGENT_HOST`            Database server host (defaults to `localhost`)
+* `DBAGENT_PORT`            Database server port (defaults to `5432`)
+* `DBAGENT_DB`              Database name (defaults to `suppliers-and-parts`)
+* `DBAGENT_USER`            Database user (defaults to `dbagent`)
+* `DBAGENT_PASSWORD`        Database password (defaults to `dbagent`)
+* `DBAGENT_SOCKET`          Database server socket (if host/port is not used)
+* `DBAGENT_SUPER_USER`      Superuser name (postgres only)
+* `DBAGENT_SUPER_DB`        Superuser database (postgres only)
+* `DBAGENT_SUPER_PASSWORD`  Superuser password (postgres only)
+* `DBAGENT_VIEWPOINT`       Bmg viewpoint (class name) when using db:flush
+
 ## Available rake tasks
 
 The following rake tasks helps you managing the database. They must typically be executed on the docker container.

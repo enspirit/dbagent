@@ -1,6 +1,8 @@
 require 'path'
 require 'sequel'
 require 'sinatra'
+require 'bmg'
+require 'bmg/sequel'
 module DbAgent
 
   # Current version of DbAgent
@@ -63,7 +65,15 @@ module DbAgent
   # Sequel database for superuser
   SUPERUSER_DATABASE = ::Sequel.connect(SUPERUSER_CONFIG)
 
+  def self.require_viewpoints
+    vp = ROOT_FOLDER/'viewpoints'
+    return unless vp.directory?
+    Path.require_tree(vp.expand_path)
+  end
+
 end # module DbAgent
+require 'db_agent/viewpoint'
 require 'db_agent/seeder'
 require 'db_agent/table_orderer'
 require 'db_agent/webapp'
+DbAgent.require_viewpoints
