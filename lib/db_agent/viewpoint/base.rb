@@ -1,5 +1,6 @@
 module DbAgent
   module Viewpoint
+    # Factors relations on top of a Sequel database.
     class Base
 
       def initialize(db = SEQUEL_DATABASE)

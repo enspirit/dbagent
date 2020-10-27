@@ -1,5 +1,6 @@
 module DbAgent
   module Viewpoint
+    # Delegates all relation accesses to `child`.
     module Delegate
 
       def method_missing(name, *args, &bl)

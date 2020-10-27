@@ -1,3 +1,7 @@
+# 2.2.1 - 2020/10/27
+
+* Add a Typecheck utility viewpoint.
+
 # 2.2.0 - 2020/10/27
 
 * Improve logging: exposing now the `DBAGENT_LOGLEVEL`
