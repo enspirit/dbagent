@@ -86,3 +86,19 @@ environment variables accordingly in the commands below.
 ```
 DBAGENT_ROOT_FOLDER=examples/suppliers-and-parts bundle exec rake db:create db:migrate db:seed['base']
 ```
+
+## Contributions
+
+### Running test
+
+To run the test you need to have `Docker` on your computer.
+
+Run: 
+```
+make test
+```
+
+Don't forget to delete created ressources for the tests bun running:
+```
+make clean
+```
