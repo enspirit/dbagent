@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/enspirit/dbagent.svg?branch=master)](https://travis-ci.com/enspirit/dbagent)
+
 # DbAgent, a ruby tool to migrate, spy and seed PostgreSQL databases
 
 DbAgent helps managing a relational database lifecyle through three main tools:
