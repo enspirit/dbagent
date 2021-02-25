@@ -6,21 +6,6 @@ namespace :db do
     include DbAgent
   end
 
-  def pg_cmd(cmd, *args)
-    conf = DATABASE_CONFIG
-    %Q{#{cmd} -h #{conf[:host]} -p #{conf[:port]} -U #{conf[:user]} #{args.join(' ')}}
-  end
-
-  def psql(*args)
-    pg_cmd('psql', *args)
-  end
-
-  def shell(*cmds)
-    cmd = cmds.join("\n")
-    puts cmd
-    system cmd
-  end
-
   desc "Pings the database, making sure everything's ready for migration"
   task :ping => :require do
     puts "Using #{DATABASE_CONFIG}"
@@ -65,14 +50,12 @@ namespace :db do
 
   desc "Drops the user & database (USE WITH CARE)"
   task :drop => :require do
-    shell pg_cmd("dropdb", DATABASE_CONFIG[:database]),
-          pg_cmd("dropuser", DATABASE_CONFIG[:user])
+    DbTasks.drop(DATABASE_CONFIG[:adapter])
   end
 
   desc "Creates an fresh new user & database (USE WITH CARE)"
   task :create => :require do
-    shell pg_cmd("createuser","--no-createdb","--no-createrole","--no-superuser","--no-password",DATABASE_CONFIG[:user]),
-          pg_cmd("createdb","--owner=#{DATABASE_CONFIG[:user]}", DATABASE_CONFIG[:database])
+    DbTasks.create(DATABASE_CONFIG[:adapter])
   end
 
   desc "Dump a database backup"

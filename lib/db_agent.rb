@@ -86,4 +86,5 @@ require 'db_agent/viewpoint'
 require 'db_agent/seeder'
 require 'db_agent/table_orderer'
 require 'db_agent/webapp'
+require 'db_agent/db_tasks'
 DbAgent.require_viewpoints
