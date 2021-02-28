@@ -54,12 +54,12 @@ namespace :db do
 
   desc "Drops the user & database (USE WITH CARE)"
   task :drop => :require do
-    DbTasks.drop(DATABASE_CONFIG[:adapter])
+    db_handler.drop
   end
 
   desc "Creates an fresh new user & database (USE WITH CARE)"
   task :create => :require do
-    puts "OK I'm here"
+    db_handler.create
   end
 
   desc "Dump a database backup"
