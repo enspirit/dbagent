@@ -6,6 +6,10 @@ namespace :db do
     include DbAgent
   end
 
+  def db_handler
+    @db_handler ||= DbHandler.new
+  end
+
   desc "Pings the database, making sure everything's ready for migration"
   task :ping => :require do
     puts "Using #{DATABASE_CONFIG}"
@@ -55,7 +59,7 @@ namespace :db do
 
   desc "Creates an fresh new user & database (USE WITH CARE)"
   task :create => :require do
-    DbTasks.create(DATABASE_CONFIG[:adapter])
+    puts "OK I'm here"
   end
 
   desc "Dump a database backup"
