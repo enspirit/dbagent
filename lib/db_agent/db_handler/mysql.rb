@@ -1,10 +1,10 @@
 module DbAgent
   class DbHandler
-    class MSSQL < DbHandler
+    class MySQL < DbHandler
 
       def create
       end
 
-    end # MSSQL
+    end # MySQL
   end # DbHandler
 end # DbAgent

@@ -1,37 +1,103 @@
 require_relative 'db_handler/postgresql'
 require_relative 'db_handler/mssql'
+require_relative 'db_handler/mysql'
 
 module DbAgent
   class DbHandler
-    attr_reader :adapter_klass
-    
-    def initialize
+
+    def initialize(config, backup_folder, schema_folder, superconfig = nil )
+      @config = config
+      @superconfig = superconfig
+      @backup_folder = backup_folder
+      @schema_folder = schema_folder
+    end
+    attr_reader :config, :superconfig, :backup_folder; :schema_folder
+
+    def ping
+      puts "Using #{config}"
+      sequel_db.test_connection
+      puts "Everything seems fine!"
     end
 
     def create
-      adapter_klass.create
+      raise NotImplementedError
     end
 
     def drop
-      adapter_klass.drop
+      raise NotImplementedError
     end
 
-    private
-    def klass_for(adapter)
-      case adapter
+    def backup
+      raise NotImplementedError
+    end
+
+    def wait_server
+      require 'net/ping'
+      raise "No host found" unless config[:host]
+      check = Net::Ping::External.new(config[:host])
+      puts "Trying to ping `#{config[:host]}`"
+      15.downto(0) do |i|
+        print "."
+        if check.ping?
+          print "\nServer found.\n"
+          break
+        elsif i == 0
+          print "\n"
+          raise "Server not found, I give up."
+        else
+          sleep(1)
+        end
+      end    
+    end
+
+    def restore(t, args)
+      candidates = backup_folder.glob("*.sql").sort
+      if args[:pattern] && rx = Regexp.new(args[:pattern])
+        candidates = candidates.select{|f| f.basename.to_s =~ rx }
+      end
+      file = candidates.last
+      shell pg_cmd('psql', config[:database], '<', file.to_s)
+    end
+
+    def migrate
+      Sequel.extension :migration
+      if (sf = MIGRATIONS_FOLDER/'superuser').exists?
+        Sequel::Migrator.run(SUPERUSER_DATABASE, MIGRATIONS_FOLDER/'superuser', table: 'superuser_migrations')
+      end
+      Sequel::Migrator.run(SEQUEL_DATABASE, MIGRATIONS_FOLDER)  
+    end
+
+    def repl
+      raise NotImplementedError
+    end
+
+    def spy 
+      raise NotImplementedError
+    end
+
+    def self.factor(config, backup_folder, schema_folder, superconfig)
+      case config[:adapter]
       when 'postgres'
-        PostgreSQL
+        PostgreSQL.new(config, backup_folder, schema_folder, superconfig)
       when 'mssql'
-        MSSQL
+        MSSQL.new(config, superconfig, backup_folder)
       when 'mysql'
-        MySQL
+        MySQL.new(config, superconfig, backup_folder)
       else
-        PostgreSQL
+        PostgreSQL.new(config, superconfig, backup_folder)
       end
     end
 
-    def adapter_klass
-      @adapter_klass ||= klass_for(DATABASE_CONFIG[:adapter]).new
+  private
+
+    def sequel_db
+      @sequel_db ||= ::Sequel.connect(config)
     end
+
+    def sequel_superdb
+      raise "No superconfig set" if superconfig.nil?
+      @sequel_superdb ||= ::Sequel.connect(superconfig)
+    end
+
   end # class DbHandler
 end # module DbAgent
