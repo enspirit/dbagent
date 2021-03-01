@@ -1,17 +1,20 @@
 require_relative 'db_handler/postgresql'
+require_relative 'db_handler/mssql'
+
 module DbAgent
   class DbHandler
+    attr_reader :adapter_klass
     
     def initialize
     end
 
     def create
-      klass_for(DATABASE_CONFIG[:adapter]).create
+      adapter_klass.create
     end
 
-    # def drop(adapter)
-    #   klass_for(adapter).drop
-    # end
+    def drop
+      adapter_klass.drop
+    end
 
     private
     def klass_for(adapter)
@@ -25,6 +28,10 @@ module DbAgent
       else
         PostgreSQL
       end
+    end
+
+    def adapter_klass
+      @adapter_klass ||= klass_for(DATABASE_CONFIG[:adapter]).new
     end
   end # class DbHandler
 end # module DbAgent
