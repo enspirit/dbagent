@@ -7,7 +7,8 @@ namespace :db do
   end
 
   def db_handler
-    @db_handler ||= DbHandler.factor(DATABASE_CONFIG, BACKUP_FOLDER, SCHEMA_FOLDER, SUPERUSER_CONFIG)
+    options = { config: DATABASE_CONFIG, backup: BACKUP_FOLDER, schema: SCHEMA_FOLDER, superconfig: SUPERUSER_CONFIG}
+    @db_handler ||= DbHandler.factor(options)
   end
 
   desc "Pings the database, making sure everything's ready for migration"

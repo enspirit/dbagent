@@ -5,11 +5,11 @@ require_relative 'db_handler/mysql'
 module DbAgent
   class DbHandler
 
-    def initialize(config, backup_folder, schema_folder, superconfig = nil )
-      @config = config
-      @superconfig = superconfig
-      @backup_folder = backup_folder
-      @schema_folder = schema_folder
+    def initialize(options)
+      @config = options[:config]
+      @backup_folder = options[:backup]
+      @schema_folder = options[:schema]
+      @superconfig = options[:superconfig]
     end
     attr_reader :config, :superconfig, :backup_folder; :schema_folder
 
@@ -75,16 +75,16 @@ module DbAgent
       raise NotImplementedError
     end
 
-    def self.factor(config, backup_folder, schema_folder, superconfig)
-      case config[:adapter]
+    def self.factor(options)
+      case options[:config][:adapter]
       when 'postgres'
-        PostgreSQL.new(config, backup_folder, schema_folder, superconfig)
+        PostgreSQL.new(options)
       when 'mssql'
-        MSSQL.new(config, superconfig, backup_folder)
+        MSSQL.new(options)
       when 'mysql'
-        MySQL.new(config, superconfig, backup_folder)
+        MySQL.new(options)
       else
-        PostgreSQL.new(config, superconfig, backup_folder)
+        PostgreSQL.new(options)
       end
     end
 
