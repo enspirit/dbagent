@@ -7,11 +7,12 @@ module DbAgent
 
     def initialize(options)
       @config = options[:config]
+      @superconfig = options[:superconfig]
       @backup_folder = options[:backup]
       @schema_folder = options[:schema]
-      @superconfig = options[:superconfig]
+      @migrations_folder = options[:migrations]
     end
-    attr_reader :config, :superconfig, :backup_folder; :schema_folder
+    attr_reader :config, :superconfig, :backup_folder, :schema_folder, :migrations_folder
 
     def ping
       puts "Using #{config}"
@@ -61,10 +62,10 @@ module DbAgent
 
     def migrate
       Sequel.extension :migration
-      if (sf = MIGRATIONS_FOLDER/'superuser').exists?
-        Sequel::Migrator.run(SUPERUSER_DATABASE, MIGRATIONS_FOLDER/'superuser', table: 'superuser_migrations')
+      if (sf = migrations_folder/'superuser').exists?
+        Sequel::Migrator.run(sequel_superdb, migrations_folder/'superuser', table: 'superuser_migrations')
       end
-      Sequel::Migrator.run(SEQUEL_DATABASE, MIGRATIONS_FOLDER)  
+      Sequel::Migrator.run(sequel_db, migrations_folder)  
     end
 
     def repl
