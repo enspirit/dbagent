@@ -27,6 +27,15 @@ module DbAgent
         system %Q{open #{schema_folder}/spy/index.html}    
       end
 
+      def restore(t, args)
+        candidates = backup_folder.glob("*.sql").sort
+        if args[:pattern] && rx = Regexp.new(args[:pattern])
+          candidates = candidates.select{|f| f.basename.to_s =~ rx }
+        end
+        file = candidates.last
+        shell pg_cmd('psql', config[:database], '<', file.to_s)
+      end
+  
       private
 
       def pg_cmd(cmd, *args)
