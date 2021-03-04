@@ -32,6 +32,10 @@ module DbAgent
       raise NotImplementedError
     end
 
+    def repl
+      raise NotImplementedError
+    end
+
     def wait_server
       require 'net/ping'
       raise "No host found" unless config[:host]
