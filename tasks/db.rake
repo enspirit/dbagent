@@ -99,12 +99,14 @@ namespace :db do
   task :revive => [ :restore, :migrate ]
 
   desc "Runs migrations on the current database"
-  task :migrate => :require do
+  task :migrate, [:version] => :require do |_t, args|
+    version = args[:version].to_i if args[:version]
+
     Sequel.extension :migration
     if (sf = MIGRATIONS_FOLDER/'superuser').exists?
-      Sequel::Migrator.run(SUPERUSER_DATABASE, MIGRATIONS_FOLDER/'superuser', table: 'superuser_migrations')
+      Sequel::Migrator.run(SUPERUSER_DATABASE, MIGRATIONS_FOLDER/'superuser', table: 'superuser_migrations', target: version)
     end
-    Sequel::Migrator.run(SEQUEL_DATABASE, MIGRATIONS_FOLDER)
+    Sequel::Migrator.run(SEQUEL_DATABASE, MIGRATIONS_FOLDER, target: version)
   end
 
   desc "Dumps the schema documentation into database/schema"
