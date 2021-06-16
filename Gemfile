@@ -5,7 +5,7 @@ gem 'pg', '~> 1'
 gem 'rake', '~> 13'
 gem 'path', '~> 2'
 gem 'sinatra', '~> 2'
-gem 'bmg', '~> 0.17'
+gem 'bmg', '~> 0.18'
 gem 'net-ping'
 
 group :development do
