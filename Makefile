@@ -15,6 +15,7 @@ exec_test:
 	docker exec -it dbagent bundle exec rake db:seed[base] db:flush[tmp]
 	docker exec -eDBAGENT_VIEWPOINT=DbAgent::Viewpoint::InCity -it dbagent bundle exec rake db:flush[incity]
 	docker exec -it dbagent bundle exec rake db:spy
+	docker exec -it dbagent bundle exec rake db:backup
 	docker exec -it dbagent bundle exec rake test
 
 clean:

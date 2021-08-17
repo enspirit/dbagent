@@ -14,7 +14,7 @@ module DbAgent
 
       def backup
         datetime = Time.now.strftime("%Y%m%dT%H%M%S")
-        shell pg_cmd("pg_dump", "--clean", "> #{backup_folder}/backup-#{datetime}.sql")
+        shell pg_dump("--clean", config[:database], "> #{backup_folder}/backup-#{datetime}.sql")
       end
 
       def repl
@@ -44,14 +44,22 @@ module DbAgent
         shell pg_cmd('psql', config[:database], '<', file.to_s)
       end
 
-      private
+    private
 
       def pg_cmd(cmd, *args)
         %Q{#{cmd} -h #{config[:host]} -p #{config[:port]} -U #{config[:user]} #{args.join(' ')}}
       end
 
       def psql(*args)
-        pg_cmd('psql', *args)
+        cmd = "psql"
+        cmd = "PGPASSWORD=#{config[:password]} #{cmd}" if config[:password]
+        pg_cmd(cmd, *args)
+      end
+
+      def pg_dump(*args)
+        cmd = "pg_dump"
+        cmd = "PGPASSWORD=#{config[:password]} #{cmd}" if config[:password]
+        pg_cmd(cmd, *args)
       end
     end # class PostgreSQL
   end # module DbHandler
