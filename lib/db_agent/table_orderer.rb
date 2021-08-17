@@ -2,10 +2,14 @@ require 'tsort'
 module DbAgent
   class TableOrderer
 
-    def initialize(db = SEQUEL_DATABASE)
-      @db = db
+    def initialize(handler)
+      @handler = handler
     end
-    attr_reader :db
+    attr_reader :handler
+
+    def db
+      handler.sequel_db
+    end
 
     def tsort
       @tsort ||= TSortComputation.new(db).tsort
@@ -35,7 +39,7 @@ module DbAgent
     class TSortComputation
       include TSort
 
-      def initialize(db = SEQUEL_DATABASE)
+      def initialize(db)
         @db = db
       end
       attr_reader :db

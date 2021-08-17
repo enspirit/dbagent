@@ -10,7 +10,7 @@ module SpecHelper
   end
 
   def database
-    DbAgent::SEQUEL_DATABASE
+    @db ||= DbAgent.default_handler.sequel_db
   end
 
 end

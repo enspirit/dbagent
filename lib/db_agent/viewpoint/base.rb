@@ -3,7 +3,7 @@ module DbAgent
     # Factors relations on top of a Sequel database.
     class Base
 
-      def initialize(db = SEQUEL_DATABASE)
+      def initialize(db)
         @db = db
       end
       attr_reader :db

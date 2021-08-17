@@ -1,14 +1,14 @@
 module DbAgent
   class Seeder
 
-    def initialize(db = SEQUEL_DATABASE)
-      @db = db
+    def initialize(handler)
+      @handler = handler
     end
-    attr_reader :db
+    attr_reader :handler
 
     def install(from)
-      db.transaction do
-        folder = DATA_FOLDER/from
+      handler.sequel_db.transaction do
+        folder = handler.data_folder/from
 
         # load files in order
         pairs = merged_data(from)
@@ -19,19 +19,19 @@ module DbAgent
         # Truncate tables then fill them
         names.reverse.each do |name|
           LOGGER.info("Emptying table `#{name}`")
-          db[name.to_sym].delete
+          handler.sequel_db[name.to_sym].delete
         end
         names.each do |name|
           LOGGER.info("Filling table `#{name}`")
           file = pairs[name]
-          db[name.to_sym].multi_insert(file.load)
+          handler.sequel_db[name.to_sym].multi_insert(file.load)
         end
       end
     end
 
     def flush(to)
-      target = (DATA_FOLDER/to).rm_rf.mkdir_p
-      source = (DATA_FOLDER/"empty")
+      target = (handler.data_folder/to).rm_rf.mkdir_p
+      source = (handler.data_folder/"empty")
       (target/"metadata.json").write <<-JSON.strip
         { "inherits": "empty" }
       JSON
@@ -41,11 +41,11 @@ module DbAgent
     end
 
     def flush_seed_file(f, to = f.parent)
-      target = (DATA_FOLDER/to)
+      target = (handler.data_folder/to)
       table = file2table(f)
       data = viewpoint.send(table.to_sym).to_a
       if data.empty?
-        LOGGER.debug("Skipping table `#{table}` since empty")
+        LOGGER.info("Skipping table `#{table}` since empty")
       else
         LOGGER.info("Flushing table `#{table}`")
         json = JSON.pretty_generate(data)
@@ -54,13 +54,13 @@ module DbAgent
     end
 
     def each_seed(install = true)
-      DATA_FOLDER.glob('**/*') do |file|
+      handler.data_folder.glob('**/*') do |file|
         next unless file.directory?
         next unless (file/"metadata.json").exists?
 
-        base = file.relative_to(DATA_FOLDER)
+        base = file.relative_to(handler.data_folder)
         begin
-          Seeder.new.install(base)
+          Seeder.new(handler).install(base)
           puts "#{base} OK"
           yield(self, file) if block_given?
         rescue => ex
@@ -73,7 +73,7 @@ module DbAgent
   private
 
     def merged_data(from)
-      folder = DATA_FOLDER/from
+      folder = handler.data_folder/from
       data   = {}
 
       # load metadata and install parent dataset if any
@@ -101,9 +101,9 @@ module DbAgent
 
     def viewpoint
       @viewpoint ||= if vp = ENV['DBAGENT_VIEWPOINT']
-        Kernel.const_get(vp).new(db)
+        Kernel.const_get(vp).new(handler.sequel_db)
       else
-        Viewpoint::Base.new(db)
+        Viewpoint::Base.new(handler.sequel_db)
       end
     end
 

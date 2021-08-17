@@ -4,8 +4,7 @@ module DbAgent
   describe TableOrderer do
 
     subject {
-      db = DbAgent::SEQUEL_DATABASE
-      TableOrderer.new(db)
+      TableOrderer.new(DbAgent.default_handler)
     }
 
     it 'has a tsort that returns table in order, least dependent first' do
