@@ -12,7 +12,7 @@ module DbAgent
     end
 
     def tsort
-      @tsort ||= TSortComputation.new(db).tsort
+      @tsort ||= TSortComputation.new(db).to_a
     end
 
     def graph
@@ -39,10 +39,11 @@ module DbAgent
     class TSortComputation
       include TSort
 
-      def initialize(db)
+      def initialize(db, except = [])
         @db = db
+        @except = except
       end
-      attr_reader :db
+      attr_reader :db, :except
 
       def graph
         g = Hash.new{|h,k| h[k] = [] }
@@ -52,6 +53,16 @@ module DbAgent
           end
         end
         g
+      rescue TSort::Cyclic
+        raise unless killed = to_kill
+        TSortComputation.new(db, except + [killed]).graph
+      end
+
+      def to_a
+        tsort.to_a
+      rescue TSort::Cyclic
+        raise unless killed = to_kill
+        TSortComputation.new(db, except + [killed]).to_a
       end
 
       def tsort_each_node(&bl)
@@ -61,8 +72,21 @@ module DbAgent
       def tsort_each_child(table, &bl)
         db.foreign_key_list(table)
           .map{|fk| fk[:table] }
+          .reject{|t|
+            except.any?{|killed| killed.first == table && killed.last == t }
+          }
           .each(&bl)
       end
+
+    private
+
+      def to_kill
+        each_strongly_connected_component
+          .select{|scc| scc.size > 1 }
+          .sort_by{|scc| scc.size }
+          .first
+      end
+
     end # class TSortComputation
 
   end # class TableOrderer
