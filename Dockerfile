@@ -21,8 +21,10 @@ RUN  apt-get update \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+USER app
+
 COPY --chown=app:app Gemfile Gemfile.lock /home/app/
-RUN cd /home/app && bundle install
+RUN cd /home/app && bundle install --path=vendor/bundle
 
 RUN mkdir -p /home/app/vendor && \
     curl -L https://jdbc.postgresql.org/download/postgresql-42.2.23.jar -o /home/app/vendor/postgresql-42.2.23.jar && \
@@ -30,4 +32,4 @@ RUN mkdir -p /home/app/vendor && \
 
 COPY --chown=app:app . /home/app
 
-CMD bundle exec rackup -p 80 -o 0.0.0.0
+CMD bundle exec rackup -p 9292 -o 0.0.0.0
