@@ -29,6 +29,16 @@ module DbAgent
       end
     end
 
+    def flush_empty(to = "empty")
+      target = (handler.data_folder/to).rm_rf.mkdir_p
+      (target/"metadata.json").write <<-JSON.strip
+        {}
+      JSON
+      TableOrderer.new(handler).tsort.each_with_index do |table_name, index|
+        (target/"#{(index*10).to_s.rjust(5,"0")}-#{table_name}.json").write("[]")
+      end
+    end
+
     def flush(to)
       target = (handler.data_folder/to).rm_rf.mkdir_p
       source = (handler.data_folder/"empty")
@@ -40,16 +50,20 @@ module DbAgent
       end
     end
 
-    def flush_seed_file(f, to = f.parent)
+    def flush_seed_file(f, to)
       target = (handler.data_folder/to)
       table = file2table(f)
-      data = viewpoint.send(table.to_sym).to_a
-      if data.empty?
-        LOGGER.info("Skipping table `#{table}` since empty")
+      flush_table(table, target, f.basename, true)
+    end
+
+    def flush_table(table_name, target_folder, file_name, skip_empty)
+      data = viewpoint.send(table_name.to_sym).to_a
+      if data.empty? && skip_empty
+        LOGGER.info("Skipping table `#{table_name}` since empty")
       else
-        LOGGER.info("Flushing table `#{table}`")
+        LOGGER.info("Flushing table `#{table_name}`")
         json = JSON.pretty_generate(data)
-        (target/f.basename).write(json)
+        (target_folder/file_name).write(json)
       end
     end
 

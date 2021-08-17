@@ -87,6 +87,12 @@ namespace :db do
   end
   task :flush => :require
 
+  desc "Flushes the initial empty files as a data set"
+  task :flush_empty, :to do |t,args|
+    Seeder.new(db_handler).flush_empty(args[:to] || Time.now.strftime("%Y%M%d%H%M%S").to_s)
+  end
+  task :flush_empty => :require
+
   desc "Shows what tables depend on a given one"
   task :dependencies, :of do |t,args|
     puts TableOrderer.new(db_handler).dependencies(args[:of].to_sym).reverse

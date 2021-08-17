@@ -12,8 +12,10 @@ prepare: image
 exec_test:
 	docker exec -it dbagent bundle exec rake db:wait db:ping
 	docker exec -it dbagent bundle exec rake db:migrate
-	docker exec -it dbagent bundle exec rake db:seed[base] db:flush[tmp]
+	docker exec -it dbagent bundle exec rake db:seed[base]
+	docker exec -it dbagent bundle exec rake db:flush[tmp]
 	docker exec -eDBAGENT_VIEWPOINT=DbAgent::Viewpoint::InCity -it dbagent bundle exec rake db:flush[incity]
+	docker exec -it dbagent bundle exec rake db:flush_empty[new_empty]
 	docker exec -it dbagent bundle exec rake db:spy
 	docker exec -it dbagent bundle exec rake db:backup
 	docker exec -it dbagent bundle exec rake test
