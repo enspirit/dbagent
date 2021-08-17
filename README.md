@@ -1,4 +1,4 @@
-# DbAgent, a ruby tool to migrate, spy and seed PostgreSQL databases
+# DbAgent, a ruby tool to migrate, spy and seed relational databases
 
 DbAgent helps managing a relational database lifecyle through three main tools:
 

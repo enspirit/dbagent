@@ -5,9 +5,7 @@ require 'sinatra'
 require 'bmg'
 require 'bmg/sequel'
 module DbAgent
-
-  # Current version of DbAgent
-  VERSION = "2.2.2"
+  require_relative 'db_agent/version'
 
   # Simply checks that a path exists of raise an error
   def self._!(path)

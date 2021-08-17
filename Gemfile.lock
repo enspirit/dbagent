@@ -1,3 +1,16 @@
+PATH
+  remote: .
+  specs:
+    dbagent (3.0.0.pre.beta1)
+      bmg (~> 0.18)
+      net-ping (~> 2)
+      path (~> 2)
+      pg (~> 1)
+      predicate (~> 2)
+      rake (~> 13)
+      sequel (~> 5)
+      sinatra (~> 2)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -17,7 +30,7 @@ GEM
       rack
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
-    rake (13.0.3)
+    rake (13.0.6)
     rspec (3.10.0)
       rspec-core (~> 3.10.0)
       rspec-expectations (~> 3.10.0)
@@ -31,8 +44,8 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.10.0)
     rspec-support (3.10.2)
-    ruby2_keywords (0.0.4)
-    sequel (5.45.0)
+    ruby2_keywords (0.0.5)
+    sequel (5.47.0)
     sexpr (0.6.0)
     sinatra (2.1.0)
       mustermann (~> 1.0)
@@ -45,16 +58,10 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bmg (~> 0.18)
   bundler (~> 2)
-  net-ping
-  path (~> 2)
-  pg (~> 1)
+  dbagent!
   rack-test (~> 1)
-  rake (~> 13)
   rspec (~> 3)
-  sequel (~> 5)
-  sinatra (~> 2)
 
 BUNDLED WITH
    2.2.11

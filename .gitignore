@@ -7,3 +7,4 @@ examples/suppliers-and-parts/data/tmp/
 examples/suppliers-and-parts/data/incity/
 examples/suppliers-and-parts/data/new_empty/
 examples/suppliers-and-parts/backups/*.sql
+pkg/*

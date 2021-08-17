@@ -23,7 +23,8 @@ RUN  apt-get update \
 
 USER app
 
-COPY --chown=app:app Gemfile Gemfile.lock /home/app/
+COPY --chown=app:app Gemfile Gemfile.lock dbagent.gemspec /home/app/
+COPY --chown=app:app lib/db_agent/version.rb /home/app/lib/db_agent/version.rb
 RUN cd /home/app && bundle install --path=vendor/bundle
 
 RUN mkdir -p /home/app/vendor && \
