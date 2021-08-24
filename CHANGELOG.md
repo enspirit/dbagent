@@ -1,3 +1,6 @@
+## 3.0.1 - 2021/08/24
+
+* Fix seeder when used through the webapp.
 ## 3.0.0 - 2021/08/17
 
 This release introduces many breaking changes, especially if you use DbAgent
