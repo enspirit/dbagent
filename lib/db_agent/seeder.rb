@@ -8,6 +8,8 @@ module DbAgent
 
     def install(from)
       handler.sequel_db.transaction do
+        before_seeding!
+
         folder = handler.data_folder/from
 
         # load files in order
@@ -26,6 +28,8 @@ module DbAgent
           file = pairs[name]
           handler.sequel_db[name.to_sym].multi_insert(file.load)
         end
+
+        after_seeding!(folder)
       end
     end
 
@@ -85,6 +89,19 @@ module DbAgent
     end
 
   private
+
+    def before_seeding!
+      file = handler.data_folder/"before_seeding.sql"
+      return unless file.exists?
+
+      handler.sequel_db.execute(file.read)
+    end
+
+    def after_seeding!(folder)
+      file = folder/"after_seeding.sql"
+      handler.sequel_db.execute(file.read) if file.exists?
+      after_seeding!(folder.parent) unless folder == handler.data_folder
+    end
 
     def merged_data(from)
       folder = handler.data_folder/from

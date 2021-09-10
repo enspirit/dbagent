@@ -1,3 +1,16 @@
+## 3.1.0 - 2021/09/10
+
+* Add support for a `before_seeding.sql` file in root data folder. The script
+  will be executed before the seeder starts emptying the database and can be
+  used for, e.g., disable all foreign key constraints.
+
+* Add support for `after_seeding.sql` scripts in data folders. Those scripts
+  will be executed after all tables have been filled up.
+
+  Unlike `before_seeding.sql`, those files can be put in subfolders. They are
+  executed in reverse order of inheritance (deepest levels first), but all at
+  once after the tables have been filled up.
+
 ## 3.0.1 - 2021/08/24
 
 * Fix seeder when used through the webapp.
