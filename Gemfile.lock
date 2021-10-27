@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    dbagent (3.0.1)
+    dbagent (3.1.0)
       bmg (~> 0.18)
       net-ping (~> 2)
       path (~> 2)
@@ -45,7 +45,7 @@ GEM
       rspec-support (~> 3.10.0)
     rspec-support (3.10.2)
     ruby2_keywords (0.0.5)
-    sequel (5.47.0)
+    sequel (5.49.0)
     sexpr (0.6.0)
     sinatra (2.1.0)
       mustermann (~> 1.0)
