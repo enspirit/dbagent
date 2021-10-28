@@ -1,3 +1,5 @@
+[![Integration](https://github.com/enspirit/dbagent/actions/workflows/integration.yml/badge.svg?branch=master)](https://github.com/enspirit/dbagent/actions/workflows/integration.yml)
+
 # DbAgent, a ruby tool to migrate, spy and seed relational databases
 
 DbAgent helps managing a relational database lifecyle through three main tools:
