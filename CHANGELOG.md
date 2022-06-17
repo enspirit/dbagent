@@ -1,3 +1,12 @@
+## 3.2.0
+
+* Base image now uses ruby 3.1
+
+* psql version upgraded to 13.7
+
+* predicate >= 2.7, bmg >= 0.20, sexpr >= 1.0
+
+* Use thin as web server
 ## 3.1.0 - 2021/09/10
 
 * Add support for a `before_seeding.sql` file in root data folder. The script

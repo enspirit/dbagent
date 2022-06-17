@@ -1,5 +1,16 @@
+## Better defaults for make (thanks https://tech.davis-hansson.com/p/make/)
+SHELL := bash
+.ONESHELL:
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+MAKEFLAGS += --warn-undefined-variables
+MAKEFLAGS += --no-builtin-rules
+
 DATA_PATH = $(PWD)/examples/suppliers-and-parts
 DOCKER_TAG := $(or ${DOCKER_TAG},${DOCKER_TAG},latest)
+
+ps:
+	docker ps
 
 image:
 	docker build . -t enspirit/dbagent:${DOCKER_TAG}
@@ -12,8 +23,10 @@ prepare: image
 	docker run -d --rm --name db -v db-data:/var/lib/postgresql/data --env POSTGRES_USER=dbagent --env POSTGRES_DB=suppliers-and-parts --env POSTGRES_PASSWORD=dbagent --network=agent-network --user $(id -u):$(id -g) postgres
 	docker run -d --rm --name dbagent --env DBAGENT_HOST=db -v$(PWD)/lib:/home/data/lib -v $(DATA_PATH)/data:/home/app/data -v $(DATA_PATH)/migrations:/home/app/migrations -v $(DATA_PATH)/backups:/home/app/backups -v $(DATA_PATH)/viewpoints:/home/app/viewpoints --network=agent-network --user $(id -u):$(id -g) enspirit/dbagent
 	docker exec -t dbagent bundle install
+	docker ps
 
 exec_test:
+	docker exec -t dbagent bundle exec rake test
 	docker exec -t dbagent bundle exec rake db:wait db:ping
 	docker exec -t dbagent bundle exec rake db:migrate
 	docker exec -t dbagent bundle exec rake db:seed[base]
@@ -22,13 +35,12 @@ exec_test:
 	docker exec -t dbagent bundle exec rake db:flush_empty[new_empty]
 	docker exec -t dbagent bundle exec rake db:spy
 	docker exec -t dbagent bundle exec rake db:backup
-	docker exec -t dbagent bundle exec rake test
 
-clean:
+down:
 	docker stop db dbagent || true
 	docker network rm agent-network || true
 
-test: prepare exec_test clean
+test: prepare exec_test down
 
 package: prepare
 	bundle exec rake package

@@ -19,9 +19,10 @@ Gem::Specification.new do |s|
   s.add_dependency 'rake', '~> 13'
   s.add_dependency 'path', '~> 2'
   s.add_dependency 'sinatra', '~> 2'
-  s.add_dependency 'bmg', '~> 0.18'
+  s.add_dependency 'bmg', '~> 0.20'
   s.add_dependency 'net-ping', "~> 2"
-  s.add_dependency "predicate", "~> 2"
+  s.add_dependency "predicate", "~> 2", ">= 2.7.1"
+  s.add_dependency 'thin', '~> 1'
 
   s.add_development_dependency 'bundler', '~> 2'
   s.add_development_dependency 'rspec', '~> 3'
