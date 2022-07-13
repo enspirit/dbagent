@@ -43,7 +43,7 @@ module DbAgent
       end
     end
 
-    def flush(to)
+    def flush(to, zip: false)
       target = (handler.data_folder/to).rm_rf.mkdir_p
       source = (handler.data_folder/"empty")
       (target/"metadata.json").write <<-JSON.strip
@@ -52,6 +52,19 @@ module DbAgent
       seed_files(source).each do |f|
         flush_seed_file(f, to)
       end
+      zip_it(target) if zip
+    end
+
+    def zip_it(target)
+      require 'zip'
+      zip_file = target.sub_ext('.zip')
+
+      Zip::File.open(zip_file, Zip::File::CREATE) do |zipfile|
+        target.glob('*').each do |file|
+          zipfile.add("#{target.basename}/#{file.basename}", file)
+        end
+      end
+      target.rm_rf
     end
 
     def flush_seed_file(f, to)

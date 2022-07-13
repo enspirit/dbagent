@@ -82,16 +82,29 @@ namespace :db do
   task :seed => :require
 
   desc "Flushes the database as a particular data set"
-  task :flush, :to do |t,args|
-    Seeder.new(db_handler).flush(args[:to] || Time.now.strftime("%Y%M%d%H%M%S").to_s)
+  task :flush, :to, :options do |t,args|
+    name = args[:to] || Time.now.strftime("%Y%m%d%H%M%S").to_s
+    options = instance_eval "{#{args[:options] || ''}}"
+    Seeder.new(db_handler).flush(name, **options)
   end
   task :flush => :require
 
   desc "Flushes the initial empty files as a data set"
   task :flush_empty, :to do |t,args|
-    Seeder.new(db_handler).flush_empty(args[:to] || Time.now.strftime("%Y%M%d%H%M%S").to_s)
+    name = args[:to] || Time.now.strftime("%Y%m%d%H%M%S").to_s
+    options = args[:options]
+    Seeder.new(db_handler).flush_empty(name, options)
   end
   task :flush_empty => :require
+
+  desc "Flushes the database as a particular data set in a .zip file"
+  task :zip, :to, :options do |t,args|
+    name = args[:to] || Time.now.strftime("%Y%m%d%H%M%S").to_s
+    options = instance_eval "{#{args[:options] || ''}}"
+    options = options.merge(zip: true)
+    Seeder.new(db_handler).flush(name, **options)
+  end
+  task :zip => :require
 
   desc "Shows what tables depend on a given one"
   task :dependencies, :of do |t,args|

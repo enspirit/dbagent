@@ -1,4 +1,9 @@
-## 3.2.0
+## 3.3.0
+
+* Add `db:zip` that flushes the database as a zip file instead
+  of a folder.
+
+## 3.2.0 - 2022/06/17
 
 * Base image now uses ruby 3.1
 
