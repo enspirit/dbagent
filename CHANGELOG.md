@@ -1,8 +1,8 @@
-## 3.2.1
+## 3.2.1 - 2022/07/13
 
 * Correctly discover MySQL handler when mysql2 is used.
 
-## 3.2.0
+## 3.2.0 - 2022/06/17
 
 * Base image now uses ruby 3.1
 
