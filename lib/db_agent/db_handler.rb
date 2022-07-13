@@ -97,7 +97,7 @@ module DbAgent
         PostgreSQL.new(options)
       when 'mssql'
         MSSQL.new(options)
-      when 'mysql'
+      when /mysql/
         MySQL.new(options)
       else
         PostgreSQL.new(options)
