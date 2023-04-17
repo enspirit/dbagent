@@ -1,3 +1,8 @@
+## 3.3.0
+
+* Add db:insert_script that prints an SQL INSERT script from a given seed.
+  No truncate/delete is done at all.
+
 ## 3.2.1 - 2022/07/13
 
 * Correctly discover MySQL handler when mysql2 is used.

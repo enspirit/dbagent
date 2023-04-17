@@ -81,6 +81,12 @@ namespace :db do
   end
   task :seed => :require
 
+  desc "Prints an INSERT script for a particular data set"
+  task :insert_script, :from do |t,args|
+    Seeder.new(db_handler).insert_script(args[:from] || 'empty')
+  end
+  task :insert_script => :require
+
   desc "Flushes the database as a particular data set"
   task :flush, :to do |t,args|
     Seeder.new(db_handler).flush(args[:to] || Time.now.strftime("%Y%M%d%H%M%S").to_s)

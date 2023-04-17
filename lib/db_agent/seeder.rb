@@ -18,11 +18,13 @@ module DbAgent
           pairs[p1].basename <=> pairs[p2].basename
         }
 
-        # Truncate tables then fill them
+        # Truncate tables
         names.reverse.each do |name|
           LOGGER.info("Emptying table `#{name}`")
           handler.sequel_db[name.to_sym].delete
         end
+
+        # Fill them
         names.each do |name|
           LOGGER.info("Filling table `#{name}`")
           file = pairs[name]
@@ -30,6 +32,29 @@ module DbAgent
         end
 
         after_seeding!(folder)
+      end
+    end
+
+    def insert_script(from)
+      folder = handler.data_folder/from
+
+      # load files in order
+      pairs = merged_data(from)
+      names = pairs.keys.sort{|p1,p2|
+        pairs[p1].basename <=> pairs[p2].basename
+      }
+
+      # Fill them
+      names.each do |name|
+        file = pairs[name]
+        data = file.load
+        next if data.empty?
+
+        keys = data.first.keys
+        values = data.map{|t|
+          keys.map{|k| t[k] }
+        }
+        puts handler.sequel_db[name.to_sym].multi_insert_sql(keys, values)
       end
     end
 
