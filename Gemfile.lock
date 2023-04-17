@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    dbagent (3.2.1)
+    dbagent (3.3.0)
       bmg (~> 0.20)
       net-ping (~> 2)
       path (~> 2)
@@ -71,4 +71,4 @@ DEPENDENCIES
   rspec (~> 3)
 
 BUNDLED WITH
-   2.2.16
+   2.4.6

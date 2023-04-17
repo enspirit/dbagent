@@ -1,4 +1,4 @@
-## 3.3.0
+## 3.3.0 - 2023/04/17
 
 * Add db:insert_script that prints an SQL INSERT script from a given seed.
   No truncate/delete is done at all.
