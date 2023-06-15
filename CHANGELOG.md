@@ -1,3 +1,11 @@
+## 3.4.0 - 2023/06/15
+
+* schemaspy.jar upgraded to 6.2.2
+
+* postgresql.jar upgraded to 42.6.0
+
+* Add SCHEMA_SPY_ARGS environment variable, used by `rake db:spy`
+
 ## 3.3.0 - 2023/04/17
 
 * Add db:insert_script that prints an SQL INSERT script from a given seed.

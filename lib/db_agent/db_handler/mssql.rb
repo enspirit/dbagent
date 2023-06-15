@@ -19,8 +19,20 @@ module DbAgent
       end
 
       def spy
-        jdbc_jar = (Path.dir.parent/'vendor').glob('mssql*.jar').first
-        system %Q{java -jar vendor/schemaSpy_5.0.0.jar -dp #{jdbc_jar} -t mssql05 -host #{config[:host]} -u #{config[:user]} -p #{config[:password]} -db #{config[:database]} -port #{config[:port]} -s dbo -o #{schema_folder}/spy}
+        spy_jar = DbAgent._!('vendor').glob('schema*.jar').first
+        jdbc_jar = DbAgent._!('vendor').glob('mssql*.jar').first
+        cmd = ""
+        cmd << %Q{java -jar #{spy_jar}}
+        cmd << %Q{ -dp #{jdbc_jar} -t mssql05}
+        cmd << %Q{ -host #{config[:host]}}
+        cmd << %Q{ -u #{config[:user]}}
+        cmd << %Q{ -p #{config[:password]}}
+        cmd << %Q{ -db #{config[:database]}}
+        cmd << %Q{ -port #{config[:port]}}
+        cmd << %Q{ -s dbo}
+        cmd << %Q{ -o #{schema_folder}/spy}
+        cmd << %Q{ #{ENV['SCHEMA_SPY_ARGS']}} if ENV['SCHEMA_SPY_ARGS']
+        system(cmd)
         system %Q{open #{schema_folder}/spy/index.html}
       end
 

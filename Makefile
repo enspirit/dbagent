@@ -48,12 +48,3 @@ package: prepare
 
 gem.push:
 	ls pkg/dbagent*.gem | xargs gem push
-Calling `DidYouMean::SPELL_CHECKERS.merge!(error_name => spell_checker)' has been deprecated. Please call `DidYouMean.correct_error(error_name, spell_checker)' instead.
-fatal: detected dubious ownership in repository at '/home/app'
-To add an exception for this directory, call:
-
-	git config --global --add safe.directory /home/app
-fatal: detected dubious ownership in repository at '/home/app'
-To add an exception for this directory, call:
-
-	git config --global --add safe.directory /home/app

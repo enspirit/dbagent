@@ -25,12 +25,16 @@ module DbAgent
         spy_jar = DbAgent._!('vendor').glob('schema*.jar').first
         jdbc_jar = DbAgent._!('vendor').glob('postgresql*.jar').first
         cmd = ""
-        cmd << %Q{java -jar #{spy_jar} -dp #{jdbc_jar} -t pgsql}
+        cmd << %Q{java -jar #{spy_jar}}
+        cmd << %Q{ -dp #{jdbc_jar} -t pgsql}
         cmd << %Q{ -host #{config[:host]}}
         cmd << %Q{ -port #{config[:port]}} if config[:port]
         cmd << %Q{ -u #{config[:user]}}
         cmd << %Q{ -p #{config[:password]}} if config[:password]
-        cmd << %Q{ -db #{config[:database]} -s public -o #{schema_folder}/spy}
+        cmd << %Q{ -db #{config[:database]}}
+        cmd << %Q{ -s public}
+        cmd << %Q{ -o #{schema_folder}/spy}
+        cmd << %Q{ #{ENV['SCHEMA_SPY_ARGS']}} if ENV['SCHEMA_SPY_ARGS']
         system(cmd)
         system %Q{open #{schema_folder}/spy/index.html}
       end
