@@ -43,7 +43,8 @@ down:
 
 test: prepare exec_test down
 
-package: prepare
+package:
+	bundle install
 	bundle exec rake package
 
 gem.push:

@@ -28,7 +28,7 @@ jobs:
         id: gem-push
         env:
           RUBYGEMS_API_KEY: ${{ secrets.RUBYGEMS_API_KEY }}
-          RELEASE_COMMAND: make gem.push
+          RELEASE_COMMAND: make package gem.push
 
       - uses: act10ns/slack@v1
         with:
