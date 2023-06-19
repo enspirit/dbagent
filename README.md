@@ -31,6 +31,7 @@ See the examples folder for details.
 * `DBAGENT_SUPER_USER`      Superuser name (postgres only)
 * `DBAGENT_SUPER_DB`        Superuser database (postgres only)
 * `DBAGENT_SUPER_PASSWORD`  Superuser password (postgres only)
+* `DBAGENT_WAIT_TIMEOUT_IN_SEC` Timeout in seconds before db:wait_server and db:wait give up
 * `DBAGENT_VIEWPOINT`       Bmg viewpoint (class name) when using db:flush
 
 ## Available rake tasks
@@ -51,6 +52,8 @@ rake db:spy              # Dumps the schema documentation into database/schema
 rake db:backup           # Makes a database backup to the backups folder
 rake db:restore[match]   # Restore the last matching database backup file from backups folder
 rake db:revive           # Shortcut for both db:restore and db:migrate
+rake db:wait_server      # Waits until the postgresql host seems available
+rake db:wait             # Waits until the postgresql database seems available
 rake db:tables           # List tables with those with fewer dependencies first
 rake db:dependencies[of] # List tables that depend of a given one
 ```

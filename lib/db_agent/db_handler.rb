@@ -42,8 +42,8 @@ module DbAgent
       require 'net/ping'
       raise "No host found" unless config[:host]
       check = Net::Ping::External.new(config[:host])
-      puts "Trying to ping `#{config[:host]}`"
-      15.downto(0) do |i|
+      print "Trying to ping `#{config[:host]}`\n"
+      wait_timeout_in_seconds.downto(0) do |i|
         print "."
         if check.ping?
           print "\nServer found.\n"
@@ -58,14 +58,18 @@ module DbAgent
     end
 
     def wait
-      15.downto(0) do |i|
+      print "Using #{config}\n"
+      wait_timeout_in_seconds.downto(0) do |i|
+        print "."
         begin
-          puts "Using #{config}"
           sequel_db.test_connection
-          puts "Database is there. Great."
+          print "\nDatabase is there. Great.\n"
           break
         rescue Sequel::Error
-          raise if i==0
+          if i==0
+            print "\n"
+            raise
+          end
           sleep(1)
         end
       end
@@ -121,6 +125,16 @@ module DbAgent
     def require_viewpoints!
       f = viewpoints_folder.expand_path
       Path.require_tree(f) if f.directory?
+    end
+
+  private
+
+    def wait_timeout_in_seconds
+      (ENV['DBAGENT_WAIT_TIMEOUT_IN_SEC'] || '15').to_i
+    end
+
+    def print(*args)
+      super.tap{ $stdout.flush }
     end
 
   end # class DbHandler

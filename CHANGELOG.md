@@ -1,3 +1,11 @@
+## 3.5.0
+
+* Added DBAGENT_WAIT_TIMEOUT_IN_SEC, used by db:wait_server and db:wait.
+  Default value is 15. Larger values may be needed in install processes
+  where a large database is recreated before being migrated.
+
+* Improved db:wait_server and db:wait regarding printed debug information.
+
 ## 3.4.0 - 2023/06/15
 
 * schemaspy.jar upgraded to 6.2.2
