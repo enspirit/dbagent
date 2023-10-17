@@ -1,4 +1,10 @@
-## 3.5.0
+## 3.6.0 - 2023/10/17
+
+* Version bump with new docker image bringing psql and pg_dump 15.x
+
+* General bundle update.
+
+## 3.5.0 - 2023/06/19
 
 * Added DBAGENT_WAIT_TIMEOUT_IN_SEC, used by db:wait_server and db:wait.
   Default value is 15. Larger values may be needed in install processes
