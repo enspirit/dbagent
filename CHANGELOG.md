@@ -1,3 +1,15 @@
+## 3.7.0 - 2024/02/23
+
+* Upgraded base image to ruby 3.3
+
+* schemaspy.jar upgraded to 6.2.4
+
+* postgresql.jar upgraded to 42.7.6
+
+* bmg upgraded to 0.21.x
+
+* General ruby bundle update
+
 ## 3.6.0 - 2023/10/17
 
 * Version bump with new docker image bringing psql and pg_dump 15.x
