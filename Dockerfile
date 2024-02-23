@@ -1,4 +1,4 @@
-FROM ruby:3.1
+FROM ruby:3.3
 
 ENV LANG C.UTF-8
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -28,8 +28,8 @@ COPY --chown=app:app lib/db_agent/version.rb /home/app/lib/db_agent/version.rb
 RUN cd /home/app && bundle install --path=vendor/bundle
 
 RUN mkdir -p /home/app/vendor && \
-    curl -L https://jdbc.postgresql.org/download/postgresql-42.6.0.jar -o /home/app/vendor/postgresql-42.6.0.jar && \
-    curl -L https://github.com/schemaspy/schemaspy/releases/download/v6.2.2/schemaspy-6.2.2.jar -o /home/app/vendor/schemaspy-6.2.2.jar
+    curl -L https://jdbc.postgresql.org/download/postgresql-42.7.6.jar -o /home/app/vendor/postgresql-42.7.6.jar && \
+    curl -L https://github.com/schemaspy/schemaspy/releases/download/v6.2.4/schemaspy-6.2.4.jar -o /home/app/vendor/schemaspy-6.2.4.jar
 
 COPY --chown=app:app . /home/app
 
