@@ -1,3 +1,9 @@
+## 3.8.0 - 2024/04/04
+
+* Add support for PostgreSQL schemas other than public. Names of seed files can
+  use a `schema.table` scheme, while viewpoints expect a `schema__table` method
+  name.
+
 ## 3.7.0 - 2024/02/23
 
 * Upgraded base image to ruby 3.3
