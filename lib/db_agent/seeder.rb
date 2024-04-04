@@ -14,21 +14,18 @@ module DbAgent
 
         # load files in order
         pairs = merged_data(from)
-        names = pairs.keys.sort{|p1,p2|
-          pairs[p1].basename <=> pairs[p2].basename
-        }
 
         # Truncate tables
-        names.reverse.each do |name|
-          LOGGER.info("Emptying table `#{name}`")
-          handler.sequel_db[name.to_sym].delete
+        pairs.keys.reverse.each do |table|
+          LOGGER.info("Emptying table `#{table}`")
+          handler.sequel_db[table].delete
         end
 
         # Fill them
-        names.each do |name|
-          LOGGER.info("Filling table `#{name}`")
-          file = pairs[name]
-          handler.sequel_db[name.to_sym].multi_insert(file.load)
+        pairs.keys.each do |table|
+          LOGGER.info("Filling table `#{table}`")
+          file = pairs[table]
+          handler.sequel_db[table].multi_insert(file.load)
         end
 
         after_seeding!(folder)
@@ -40,13 +37,10 @@ module DbAgent
 
       # load files in order
       pairs = merged_data(from)
-      names = pairs.keys.sort{|p1,p2|
-        pairs[p1].basename <=> pairs[p2].basename
-      }
 
       # Fill them
-      names.each do |name|
-        file = pairs[name]
+      pairs.keys.each do |table|
+        file = pairs[table]
         data = file.load
         next if data.empty?
 
@@ -54,7 +48,7 @@ module DbAgent
         values = data.map{|t|
           keys.map{|k| t[k] }
         }
-        puts handler.sequel_db[name.to_sym].multi_insert_sql(keys, values)
+        puts handler.sequel_db[table].multi_insert_sql(keys, values)
       end
     end
 
@@ -85,8 +79,9 @@ module DbAgent
       flush_table(table, target, f.basename, true)
     end
 
-    def flush_table(table_name, target_folder, file_name, skip_empty)
-      data = viewpoint.send(table_name.to_sym).to_a
+    def flush_table(table, target_folder, file_name, skip_empty)
+      data = viewpoint.send(table.gsub(/\./, '__').to_sym).to_a
+      table_name = qualify_table(table)
       if data.empty? && skip_empty
         LOGGER.info("Skipping table `#{table_name}` since empty")
       else
@@ -128,14 +123,27 @@ module DbAgent
       after_seeding!(folder.parent) unless folder == handler.data_folder
     end
 
+    # Returns a Hash[Sequel.qualify(table_name) => Path]
     def merged_data(from)
+      pairs = _merged_data(from)
+      pairs
+        .keys
+        .sort{|p1,p2|
+          pairs[p1].basename <=> pairs[p2].basename
+        }
+        .each_with_object({}) do |name,index|
+          index[qualify_table(name)] = pairs[name]
+        end
+    end
+
+    def _merged_data(from)
       folder = handler.data_folder/from
       data   = {}
 
       # load metadata and install parent dataset if any
       metadata = (folder/"metadata.json").load
       if parent = metadata["inherits"]
-        data = merged_data(parent)
+        data = _merged_data(parent)
       end
 
       seed_files(folder).each do |f|
@@ -153,6 +161,11 @@ module DbAgent
 
     def file2table(f)
       f.basename.rm_ext.to_s[/^\d+-(.*)/, 1]
+    end
+
+    def qualify_table(table_name)
+      parts = table_name.to_s.split('.')
+      parts.size === 2 ? Sequel.qualify(*parts.map(&:to_sym)) : table_name.to_sym
     end
 
     def viewpoint

@@ -10,7 +10,17 @@ module DbAgent
 
       def method_missing(name, *args, &bl)
         return super unless args.empty? and bl.nil?
-        Bmg.sequel(name, db)
+        Bmg.sequel(qualify_table(name), db)
+      end
+
+    private
+
+      def qualify_table(name)
+        if name.to_s =~ /__/
+          Sequel.qualify(*name.to_s.split('__').map(&:to_sym))
+        else
+          name
+        end
       end
 
     end # class Base

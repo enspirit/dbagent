@@ -20,7 +20,7 @@ image.push: image
 
 prepare: image
 	docker network create agent-network || true
-	docker run -d --rm --name db -v db-data:/var/lib/postgresql/data --env POSTGRES_USER=dbagent --env POSTGRES_DB=suppliers-and-parts --env POSTGRES_PASSWORD=dbagent --network=agent-network --user $(id -u):$(id -g) postgres
+	docker run -d --rm --name db -v db-data:/var/lib/postgresql/data --env POSTGRES_USER=dbagent --env POSTGRES_DB=suppliers-and-parts --env POSTGRES_PASSWORD=dbagent --network=agent-network --user $(id -u):$(id -g) postgres:15
 	docker run -d --rm --name dbagent --env DBAGENT_HOST=db -v$(PWD)/lib:/home/data/lib -v $(DATA_PATH)/data:/home/app/data -v $(DATA_PATH)/migrations:/home/app/migrations -v $(DATA_PATH)/backups:/home/app/backups -v $(DATA_PATH)/viewpoints:/home/app/viewpoints -v $(PWD)/tasks:/home/app/tasks -v $(PWD)/lib:/home/app/lib --network=agent-network --user $(id -u):$(id -g) enspirit/dbagent
 	docker exec -t dbagent bundle install
 	docker ps

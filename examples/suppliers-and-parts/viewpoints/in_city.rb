@@ -26,6 +26,7 @@ module DbAgent
           .matching(suppliers, [:sid])
           .matching(parts, [:pid])
       end
+      alias :public__supplies :supplies
 
     private
 

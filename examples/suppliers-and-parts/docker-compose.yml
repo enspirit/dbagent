@@ -9,7 +9,7 @@ services:
   # We keep the files in a mounted volume to keep the database state accross
   # executions.
   postgres:
-    image: postgres:9.5
+    image: postgres:15
     environment:
       POSTGRES_USER: dbagent
       POSTGRES_DB: suppliers-and-parts
