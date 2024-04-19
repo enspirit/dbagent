@@ -4,11 +4,11 @@ module DbAgent
   class DbHandler
     class MySQL < DbHandler
       def create
-        raise
+        shell mysql('-e', "'CREATE DATABASE #{config[:database]}'")
       end
 
       def drop
-        raise
+        shell mysql('-e', "'DROP DATABASE #{config[:database]}'")
       end
 
       def backup

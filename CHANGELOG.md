@@ -1,3 +1,7 @@
+## 3.8.1
+
+* Complete MySQL handler regarding db:create and db:drop.
+
 ## 3.8.0 - 2024/04/04
 
 * Add support for PostgreSQL schemas other than public. Names of seed files can
