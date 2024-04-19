@@ -1,4 +1,8 @@
-## 3.8.1
+## 3.8.2
+
+* Don't run superadmin migrations if none.
+
+## 3.8.1 - 2024/04/19
 
 * Complete MySQL handler regarding db:create and db:drop.
 

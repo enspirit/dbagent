@@ -81,7 +81,8 @@ module DbAgent
 
     def migrate(version = nil)
       Sequel.extension :migration
-      if (sf = migrations_folder/'superuser').exists?
+      sf = migrations_folder/'superuser'
+      if sf.exists? && !sf.glob('*.rb').empty?
         Sequel::Migrator.run(sequel_superdb, migrations_folder/'superuser', table: 'superuser_migrations', target: version)
       end
       Sequel::Migrator.run(sequel_db, migrations_folder, target: version)
