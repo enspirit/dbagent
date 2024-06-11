@@ -1,4 +1,8 @@
-## 3.8.2
+## 3.8.3 - 2024-06-11
+
+* Add support for migrations table configuration.
+
+## 3.8.2 - 2024/04/19
 
 * Don't run superadmin migrations if none.
 

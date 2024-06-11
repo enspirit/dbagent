@@ -18,21 +18,23 @@ See the examples folder for details.
 
 ## Available environment variables
 
-* `DBAGENT_ROOT_FOLDER`     Main folder where data, migrations and viewpoints can be found
-* `DBAGENT_LOGLEVEL`        Log level to use for dbagent messages (defaults to `WARN`)
-* `DBAGENT_LOGSQL`          Low Sequel's SQL queries (defaults to `no`)
-* `DBAGENT_ADAPTER`         Sequel's adapter (defaults to `postgres`)
-* `DBAGENT_HOST`            Database server host (defaults to `localhost`)
-* `DBAGENT_PORT`            Database server port (defaults to `5432`)
-* `DBAGENT_DB`              Database name (defaults to `suppliers-and-parts`)
-* `DBAGENT_USER`            Database user (defaults to `dbagent`)
-* `DBAGENT_PASSWORD`        Database password (defaults to `dbagent`)
-* `DBAGENT_SOCKET`          Database server socket (if host/port is not used)
-* `DBAGENT_SUPER_USER`      Superuser name (postgres only)
-* `DBAGENT_SUPER_DB`        Superuser database (postgres only)
-* `DBAGENT_SUPER_PASSWORD`  Superuser password (postgres only)
-* `DBAGENT_WAIT_TIMEOUT_IN_SEC` Timeout in seconds before db:wait_server and db:wait give up
-* `DBAGENT_VIEWPOINT`       Bmg viewpoint (class name) when using db:flush
+* `DBAGENT_ROOT_FOLDER`                Main folder where data, migrations and viewpoints can be found
+* `DBAGENT_LOGLEVEL`                   Log level to use for dbagent messages (defaults to `WARN`)
+* `DBAGENT_LOGSQL`                     Low Sequel's SQL queries (defaults to `no`)
+* `DBAGENT_ADAPTER`                    Sequel's adapter (defaults to `postgres`)
+* `DBAGENT_HOST`                       Database server host (defaults to `localhost`)
+* `DBAGENT_PORT`                       Database server port (defaults to `5432`)
+* `DBAGENT_DB`                         Database name (defaults to `suppliers-and-parts`)
+* `DBAGENT_USER`                       Database user (defaults to `dbagent`)
+* `DBAGENT_PASSWORD`                   Database password (defaults to `dbagent`)
+* `DBAGENT_SOCKET`                     Database server socket (if host/port is not used)
+* `DBAGENT_SUPER_USER`                 Superuser name (postgres only)
+* `DBAGENT_SUPER_DB`                   Superuser database (postgres only)
+* `DBAGENT_SUPER_PASSWORD`             Superuser password (postgres only)
+* `DBAGENT_WAIT_TIMEOUT_IN_SEC`        Timeout in seconds before db:wait_server and db:wait give up
+* `DBAGENT_VIEWPOINT`                  Bmg viewpoint (class name) when using db:flush
+* `DBAGENT_MIGRATIONS_TABLE`           The table containing the list of migrations (defaults to `schema_migrations`)
+* `DBAGENT_SUPERUSER_MIGRATIONS_TABLE` The table containing the list of superuser migrations (defaults to `superuser_migrations`)
 
 ## Available rake tasks
 
