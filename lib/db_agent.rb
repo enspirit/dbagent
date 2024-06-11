@@ -66,7 +66,9 @@ module DbAgent
     DbHandler.factor({
       config: default_config,
       superconfig: default_superconfig,
-      root: ROOT_FOLDER
+      root: ROOT_FOLDER,
+      migrations_table: ENV['DBAGENT_MIGRATIONS_TABLE'],
+      superuser_migrations_table: ENV['DBAGENT_SUPERUSER_MIGRATIONS_TABLE']
     })
   end
 

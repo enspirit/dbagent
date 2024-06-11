@@ -10,11 +10,14 @@ module DbAgent
       @migrations_folder = options[:migrations] || options[:root]/'migrations'
       @data_folder = options[:data] || options[:root]/'data'
       @viewpoints_folder = options[:viewpoints] || options[:root]/'viewpoints'
+      @migrations_table = options[:migrations_table] || 'schema_migrations'
+      @superuser_migrations_table = options[:superuser_migrations_table] || 'superuser_migrations'
       require_viewpoints!
     end
     attr_reader :config, :superconfig
     attr_reader :backup_folder, :schema_folder, :migrations_folder
     attr_reader :data_folder, :viewpoints_folder
+    attr_reader :migrations_table, :superuser_migrations_table
 
     def ping
       puts "Using #{config}"
@@ -83,9 +86,9 @@ module DbAgent
       Sequel.extension :migration
       sf = migrations_folder/'superuser'
       if sf.exists? && !sf.glob('*.rb').empty?
-        Sequel::Migrator.run(sequel_superdb, migrations_folder/'superuser', table: 'superuser_migrations', target: version)
+        Sequel::Migrator.run(sequel_superdb, migrations_folder/'superuser', table: superuser_migrations_table, target: version)
       end
-      Sequel::Migrator.run(sequel_db, migrations_folder, target: version)
+      Sequel::Migrator.run(sequel_db, migrations_folder, table: migrations_table, target: version)
     end
 
     def repl
