@@ -28,8 +28,8 @@ COPY --chown=app:app lib/db_agent/version.rb /home/app/lib/db_agent/version.rb
 RUN cd /home/app && bundle install --path=vendor/bundle
 
 RUN mkdir -p /home/app/vendor && \
-    curl -L https://jdbc.postgresql.org/download/postgresql-42.7.6.jar -o /home/app/vendor/postgresql-42.7.6.jar && \
-    curl -L https://github.com/schemaspy/schemaspy/releases/download/v6.2.4/schemaspy-6.2.4.jar -o /home/app/vendor/schemaspy-6.2.4.jar
+    curl -f -L https://jdbc.postgresql.org/download/postgresql-42.7.4.jar -o /home/app/vendor/postgresql-42.7.4.jar && \
+    curl -f -L https://github.com/schemaspy/schemaspy/releases/download/v6.2.4/schemaspy-6.2.4.jar -o /home/app/vendor/schemaspy-6.2.4.jar
 
 COPY --chown=app:app . /home/app
 
