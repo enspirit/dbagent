@@ -3,6 +3,8 @@
 * Add DbHandler#fork and DbHandler#fork_config to ease with multiple databases
   setups.
 
+* The webapp now returns a friendly error message when seeding fails.
+
 ## 3.8.3 - 2024-06-11
 
 * Add support for migrations table configuration.
