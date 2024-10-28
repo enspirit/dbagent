@@ -25,7 +25,10 @@ module DbAgent
         pairs.keys.each do |table|
           LOGGER.info("Filling table `#{table}`")
           file = pairs[table]
-          handler.sequel_db[table].multi_insert(file.load)
+          data = file.load
+          raise "Empty file: #{file}" if data.nil?
+
+          handler.sequel_db[table].multi_insert(data)
         end
 
         after_seeding!(folder)
