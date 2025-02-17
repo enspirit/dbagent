@@ -6,25 +6,18 @@ SHELL := bash
 MAKEFLAGS += --warn-undefined-variables
 MAKEFLAGS += --no-builtin-rules
 
-PLATFORMS := linux/amd64,linux/arm64/v8
 DATA_PATH = $(PWD)/examples/suppliers-and-parts
 DOCKER_TAG := $(or ${DOCKER_TAG},${DOCKER_TAG},latest)
 
 ps:
 	docker ps
 
-.build/buildx.builder:
-	mkdir -p .build
-	docker buildx create --use --name startback
-	touch .build/buildx.builder
-
 image:
 	docker build . -t enspirit/dbagent:${DOCKER_TAG}
 
-image.push: .build/buildx.builder
-	docker buildx build --push --platform ${PLATFORMS} \
-		. -t enspirit/dbagent:${DOCKER_TAG}
- 
+image.push: image
+	docker push enspirit/dbagent:${DOCKER_TAG}
+
 prepare: image
 	docker network create agent-network || true
 	docker run -d --rm --name db -v db-data:/var/lib/postgresql/data --env POSTGRES_USER=dbagent --env POSTGRES_DB=suppliers-and-parts --env POSTGRES_PASSWORD=dbagent --network=agent-network --user $(id -u):$(id -g) postgres:15
