@@ -28,9 +28,9 @@ See the examples folder for details.
 * `DBAGENT_USER`                       Database user (defaults to `dbagent`)
 * `DBAGENT_PASSWORD`                   Database password (defaults to `dbagent`)
 * `DBAGENT_SOCKET`                     Database server socket (if host/port is not used)
-* `DBAGENT_SUPER_USER`                 Superuser name (postgres only)
-* `DBAGENT_SUPER_DB`                   Superuser database (postgres only)
-* `DBAGENT_SUPER_PASSWORD`             Superuser password (postgres only)
+* `DBAGENT_SUPER_USER`                 Superuser name
+* `DBAGENT_SUPER_DB`                   Superuser database
+* `DBAGENT_SUPER_PASSWORD`             Superuser password
 * `DBAGENT_WAIT_TIMEOUT_IN_SEC`        Timeout in seconds before db:wait_server and db:wait give up
 * `DBAGENT_VIEWPOINT`                  Bmg viewpoint (class name) when using db:flush
 * `DBAGENT_MIGRATIONS_TABLE`           The table containing the list of migrations (defaults to `schema_migrations`)
