@@ -1,3 +1,8 @@
+## 3.9.0
+
+* Add DbHandler#fork and DbHandler#fork_config to ease with multiple databases
+  setups.
+
 ## 3.8.3 - 2024-06-11
 
 * Add support for migrations table configuration.

@@ -2,6 +2,7 @@ module DbAgent
   class DbHandler
 
     def initialize(options)
+      @original_options = options
       @config = options[:config]
       @superconfig = options[:superconfig]
       @root_folder = options[:root]
@@ -129,6 +130,16 @@ module DbAgent
     def require_viewpoints!
       f = viewpoints_folder.expand_path
       Path.require_tree(f) if f.directory?
+    end
+
+  # Forking
+
+    def fork(options = {})
+      DbHandler.new(@original_options.merge(options))
+    end
+
+    def fork_config(partial_config = {})
+      fork(config: config.merge(partial_config))
     end
 
   private
