@@ -1,12 +1,6 @@
 module DbAgent
   module SeedUtils
 
-    def seed_files(folder)
-      folder
-        .glob("*.json")
-        .reject{|f| f.basename.to_s =~ /^metadata/ }
-    end
-
     def file2table(file)
       file.basename.rm_ext.to_s[/^\d+-(.*)/, 1]
     end

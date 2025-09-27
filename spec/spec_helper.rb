@@ -13,6 +13,10 @@ module SpecHelper
     @db ||= DbAgent.default_handler.sequel_db
   end
 
+  def examples_folder
+    Path.backfind('.[Gemfile]')/'examples'
+  end
+
 end
 
 RSpec.configure do |c|

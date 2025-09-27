@@ -64,6 +64,7 @@ module DbAgent
   def self.default_handler
     cfg = default_config
     DbHandler.factor({
+      databases: ENV['DBAGENT_DATABASES'],
       config: cfg,
       superconfig: default_superconfig(cfg),
       root: ROOT_FOLDER,

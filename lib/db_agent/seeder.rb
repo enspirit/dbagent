@@ -2,11 +2,12 @@ module DbAgent
   class Seeder
     include SeedUtils
 
-    def initialize(handler)
+    def initialize(handler, database_suffix = nil)
       @handler = handler
-      @data_folder = DataFolder.new(handler)
+      @database_suffix = database_suffix
+      @data_folder = DataFolder.new(handler, database_suffix)
     end
-    attr_reader :handler, :data_folder
+    attr_reader :handler, :data_folder, :database_suffix
 
   end # class Seeder
 end # module DbAgent

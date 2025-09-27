@@ -2,9 +2,9 @@ module DbAgent
   class SeedFolder
     include SeedUtils
 
-    def initialize(data_folder, seed = 'empty', database = nil)
+    def initialize(data_folder, seed = 'empty', database_suffix = nil)
       @data_folder = data_folder
-      @database = database
+      @database_suffix = database_suffix
       @seed = seed
     end
     attr_reader :data_folder, :seed
@@ -14,33 +14,33 @@ module DbAgent
     end
 
     def metadata
-      @metadata ||= (folder(seed)/"metadata.json").load
+      @metadata ||= (path(seed)/"metadata.json").load
     end
 
-    def folder(seed = self.seed)
-      if @database
-        db_handler.data_folder/seed/@database
+    def path(seed = self.seed)
+      if @database_suffix
+        data_folder/seed/@database_suffix
       else
-        db_handler.data_folder/seed
+        data_folder/seed
       end
     end
 
     def parent
       @parent ||= if inherits = metadata["inherits"]
-        SeedFolder.new(data_folder, inherits, @database)
+        SeedFolder.new(data_folder, inherits, @database_suffix)
       else
         NullObject.new(data_folder)
       end
     end
 
     def before_seeding_files
-      f = (folder/'before_seeding.sql')
+      f = (path/'before_seeding.sql')
       fs = f.file? ? [f] : []
       parent.before_seeding_files + fs
     end
 
     def after_seeding_files
-      f = (folder/'after_seeding.sql')
+      f = (path/'after_seeding.sql')
       fs = f.file? ? [f] : []
       parent.after_seeding_files + fs
     end
@@ -58,8 +58,10 @@ module DbAgent
         end
     end
 
+  protected
+
     def _seed_files_per_table
-      folder = self.folder(seed)
+      folder = self.path(seed)
       map = parent._seed_files_per_table
 
       seed_files(folder).each do |f|
@@ -68,7 +70,12 @@ module DbAgent
 
       map
     end
-    protected :_seed_files_per_table
+
+    def seed_files(folder)
+      folder
+        .glob("*.json")
+        .reject{|f| f.basename.to_s =~ /^metadata/ }
+    end
 
     class NullObject < SeedFolder
       def _seed_files_per_table

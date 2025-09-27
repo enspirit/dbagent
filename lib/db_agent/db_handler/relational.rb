@@ -69,7 +69,7 @@ module DbAgent
         Sequel.extension :migration
         sf = migrations_folder/'superuser'
         if sf.exists? && !sf.glob('*.rb').empty?
-          Sequel::Migrator.run(sequel_superdb, migrations_folder/'superuser', table: superuser_migrations_table, target: version)
+          Sequel::Migrator.run(sequel_superdb, sf, table: superuser_migrations_table, target: version)
         end
         Sequel::Migrator.run(sequel_db, migrations_folder, table: migrations_table, target: version)
       end
@@ -84,8 +84,8 @@ module DbAgent
 
     public
 
-      def seeder
-        Seeder::Relational.new(self)
+      def seeder(database_suffix = nil)
+        Seeder::Relational.new(self, database_suffix)
       end
 
       def sequel_db

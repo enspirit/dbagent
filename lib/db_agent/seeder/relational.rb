@@ -48,34 +48,41 @@ module DbAgent
       end
 
       def flush_empty(to = "empty")
-        target = (handler.data_folder/to).rm_rf.mkdir_p
+        target = data_folder.seed_folder(to).path.rm_rf.mkdir_p
+
         (target/"metadata.json").write <<-JSON.strip
           {}
         JSON
+
         TableOrderer.new(handler).tsort.each_with_index do |table_name, index|
           (target/"#{(index*10).to_s.rjust(5,"0")}-#{table_name}.json").write("[]")
         end
       end
 
       def flush(to)
-        target = (handler.data_folder/to).rm_rf.mkdir_p
-        source = (handler.data_folder/"empty")
+        target = data_folder.seed_folder(to).path.rm_rf.mkdir_p
+        source = data_folder.seed_folder('empty')
+        seed_files = source.seed_files_per_table
+
         (target/"metadata.json").write <<-JSON.strip
           { "inherits": "empty" }
         JSON
-        seed_files(source).each do |f|
-          flush_seed_file(f, to)
+
+        seed_files.each_pair do |table_name, source_file|
+          target_file = target/source_file.basename.to_s
+          table = file2table(target_file)
+          flush_table(table, target_file, true)
         end
       end
 
       def check_seeds(install = true)
-        handler.data_folder.glob('**/*') do |file|
+        data_folder.glob('**/*') do |file|
           next unless file.directory?
           next unless (file/"metadata.json").exists?
 
-          base = file.relative_to(handler.data_folder)
+          base = file.relative_to(data_folder.path)
           begin
-            Seeder.new(handler).install(base)
+            handler.seeder.install(base)
             puts "#{base} OK"
           rescue => ex
             puts "KO on #{file}"
@@ -86,13 +93,7 @@ module DbAgent
 
     private
 
-      def flush_seed_file(f, to)
-        target = (handler.data_folder/to)
-        table = file2table(f)
-        flush_table(table, target, f.basename, true)
-      end
-
-      def flush_table(table, target_folder, file_name, skip_empty)
+      def flush_table(table, target_file, skip_empty)
         data = viewpoint.send(table.gsub(/\./, '__').to_sym).to_a
         table_name = qualify_table(table)
         if data.empty? && skip_empty
@@ -100,7 +101,7 @@ module DbAgent
         else
           LOGGER.info("Flushing table `#{table_name}`")
           json = JSON.pretty_generate(data)
-          (target_folder/file_name).write(json)
+          target_file.write(json)
         end
       end
 

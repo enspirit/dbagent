@@ -2,7 +2,7 @@ module DbAgent
   class DbHandler
 
     def initialize(options)
-      @original_options = options
+      @options = options
       @config = options[:config]
       @superconfig = options[:superconfig]
       @root_folder = options[:root]
@@ -15,21 +15,25 @@ module DbAgent
       @superuser_migrations_table = options[:superuser_migrations_table] || 'superuser_migrations'
       require_viewpoints!
     end
-    attr_reader :config, :superconfig
+    attr_reader :options, :config, :superconfig
     attr_reader :backup_folder, :schema_folder, :migrations_folder
     attr_reader :data_folder, :viewpoints_folder
     attr_reader :migrations_table, :superuser_migrations_table
 
     def self.factor(options)
-      case options[:config][:adapter]
-      when 'postgres'
-        PostgreSQL.new(options)
-      when 'mssql'
-        MSSQL.new(options)
-      when /mysql/
-        MySQL.new(options)
+      if options[:databases]
+        Composite.new(options)
       else
-        PostgreSQL.new(options)
+        case options[:config][:adapter]
+        when 'postgres'
+          PostgreSQL.new(options)
+        when 'mssql'
+          MSSQL.new(options)
+        when /mysql/
+          MySQL.new(options)
+        else
+          PostgreSQL.new(options)
+        end
       end
     end
 
@@ -46,7 +50,7 @@ module DbAgent
   # Forking
 
     def fork(options = {})
-      DbHandler.factor(@original_options.merge(options))
+      DbHandler.factor(@options.merge(options))
     end
 
     def fork_config(partial_config = {})
