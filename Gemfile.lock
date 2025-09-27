@@ -75,7 +75,7 @@ DEPENDENCIES
   bundler (~> 2)
   dbagent!
   rack-test (~> 1)
-  rspec (~> 3)
+  rspec (~> 3.6)
 
 BUNDLED WITH
    2.4.6
