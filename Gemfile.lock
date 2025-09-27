@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     dbagent (3.8.2)
+      base64 (~> 0.3)
       bmg (~> 0.21)
       net-ping (~> 2)
       path (~> 2)
@@ -15,6 +16,7 @@ PATH
 GEM
   remote: http://rubygems.org/
   specs:
+    base64 (0.3.0)
     bigdecimal (3.1.6)
     bmg (0.21.3)
       path (>= 2.0)
