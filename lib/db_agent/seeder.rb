@@ -1,19 +1,21 @@
 module DbAgent
   class Seeder
+    include SeedUtils
 
     def initialize(handler)
       @handler = handler
+      @data_folder = DataFolder.new(handler)
     end
-    attr_reader :handler
+    attr_reader :handler, :data_folder
 
     def install(from)
       handler.sequel_db.transaction do
         before_seeding!
 
-        folder = handler.data_folder/from
+        seed_folder = data_folder.seed_folder(from)
 
         # load files in order
-        pairs = merged_data(from)
+        pairs = seed_folder.seed_files_per_table
 
         # Truncate tables
         pairs.keys.reverse.each do |table|
@@ -31,15 +33,15 @@ module DbAgent
           handler.sequel_db[table].multi_insert(data)
         end
 
-        after_seeding!(folder)
+        after_seeding!(seed_folder)
       end
     end
 
     def insert_script(from)
-      folder = handler.data_folder/from
+      seed_folder = data_folder.seed_folder(from)
 
       # load files in order
-      pairs = merged_data(from)
+      pairs = seed_folder.seed_files_per_table
 
       # Fill them
       pairs.keys.each do |table|
@@ -120,55 +122,10 @@ module DbAgent
       handler.sequel_db.execute(file.read)
     end
 
-    def after_seeding!(folder)
+    def after_seeding!(seed_folder, folder = seed_folder.folder)
       file = folder/"after_seeding.sql"
       handler.sequel_db.execute(file.read) if file.exists?
-      after_seeding!(folder.parent) unless folder == handler.data_folder
-    end
-
-    # Returns a Hash[Sequel.qualify(table_name) => Path]
-    def merged_data(from)
-      pairs = _merged_data(from)
-      pairs
-        .keys
-        .sort{|p1,p2|
-          pairs[p1].basename <=> pairs[p2].basename
-        }
-        .each_with_object({}) do |name,index|
-          index[qualify_table(name)] = pairs[name]
-        end
-    end
-
-    def _merged_data(from)
-      folder = handler.data_folder/from
-      data   = {}
-
-      # load metadata and install parent dataset if any
-      metadata = (folder/"metadata.json").load
-      if parent = metadata["inherits"]
-        data = _merged_data(parent)
-      end
-
-      seed_files(folder).each do |f|
-        data[file2table(f)] = f
-      end
-
-      data
-    end
-
-    def seed_files(folder)
-      folder
-        .glob("*.json")
-        .reject{|f| f.basename.to_s =~ /^metadata/ }
-    end
-
-    def file2table(f)
-      f.basename.rm_ext.to_s[/^\d+-(.*)/, 1]
-    end
-
-    def qualify_table(table_name)
-      parts = table_name.to_s.split('.')
-      parts.size === 2 ? Sequel.qualify(*parts.map(&:to_sym)) : table_name.to_sym
+      after_seeding!(seed_folder, folder.parent) unless folder == handler.data_folder
     end
 
     def viewpoint
