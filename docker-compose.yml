@@ -11,4 +11,4 @@ services:
       POSTGRES_PASSWORD: dbagent
       POSTGRES_DB: suppliers-and-parts
     volumes:
-      - ./volumes/pgdata:/var/lib/postgresql/data
+      - .volumes/pgdata:/var/lib/postgresql/data

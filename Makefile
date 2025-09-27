@@ -36,19 +36,18 @@ exec_test:
 		bundle exec rake db:seed[base]; \
 		bundle exec rake db:insert_script[base]; \
 		bundle exec rake db:flush[tmp]; \
+		rm -rf examples/suppliers-and-parts/data/tmp
 		bundle exec rake db:flush_empty[new_empty]; \
+		rm -rf examples/suppliers-and-parts/data/new_empty; \
 		bundle exec rake db:spy; \
 		bundle exec rake db:backup; \
 	'
-
-clean:
-	rm -rf examples/suppliers-and-parts/data/new_empty examples/suppliers-and-parts/data/tmp
 
 down:
 	docker stop db dbagent || true
 	docker network rm agent-network || true
 
-test: down prepare exec_test clean down
+test: down prepare exec_test down
 
 package:
 	bundle install
