@@ -74,6 +74,9 @@ module DbAgent
 
 end # module DbAgent
 require 'db_agent/viewpoint'
+require 'db_agent/seed_utils'
+require 'db_agent/data_folder'
+require 'db_agent/seed_folder'
 require 'db_agent/seeder'
 require 'db_agent/table_orderer'
 require 'db_agent/db_handler'

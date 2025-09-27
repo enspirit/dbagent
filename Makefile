@@ -29,6 +29,7 @@ exec_test:
 	docker exec -t dbagent bundle exec rake test
 	docker exec -t dbagent bundle exec rake db:wait db:ping
 	docker exec -t dbagent bundle exec rake db:migrate
+	docker exec -t dbagent bundle exec rake db:check-seeds
 	docker exec -t dbagent bundle exec rake db:seed[base]
 	docker exec -t dbagent bundle exec rake db:insert_script[base]
 	docker exec -t dbagent bundle exec rake db:flush[tmp]
