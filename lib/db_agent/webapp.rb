@@ -28,13 +28,13 @@ module DbAgent
     end
 
     post '/seeds/install' do
-      Seeder.new(settings.db_handler).install(request["id"])
+      settings.db_handler.seeder.install(request["id"])
       "ok"
     end
 
     post '/seeds/flush' do
       seed_name = request["id"]
-      Seeder.new(settings.db_handler).flush(request["id"])
+      settings.db_handler.seeder.flush(request["id"])
       "ok"
     end
 

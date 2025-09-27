@@ -1,6 +1,7 @@
 module DbAgent
   class DbHandler
     class PostgreSQL < DbHandler
+      include Relational
 
       def create
         shell pg_cmd("createuser","--no-createdb","--no-createrole","--no-superuser","--no-password",config[:user]),

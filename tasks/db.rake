@@ -71,31 +71,31 @@ namespace :db do
 
   desc "Checks that all seeds can be installed correctly"
   task :"check-seeds" do
-    Seeder.new(db_handler).each_seed(true)
+    db_handler.seeder.check_seeds(true)
   end
   task :"check-seeds" => :require
 
   desc "Seeds the database with a particular data set"
   task :seed, :from do |t,args|
-    Seeder.new(db_handler).install(args[:from] || 'empty')
+    db_handler.seeder.install(args[:from] || 'empty')
   end
   task :seed => :require
 
   desc "Prints an INSERT script for a particular data set"
   task :insert_script, :from do |t,args|
-    Seeder.new(db_handler).insert_script(args[:from] || 'empty')
+    db_handler.seeder.insert_script(args[:from] || 'empty')
   end
   task :insert_script => :require
 
   desc "Flushes the database as a particular data set"
   task :flush, :to do |t,args|
-    Seeder.new(db_handler).flush(args[:to] || Time.now.strftime("%Y%M%d%H%M%S").to_s)
+    db_handler.seeder.flush(args[:to] || Time.now.strftime("%Y%M%d%H%M%S").to_s)
   end
   task :flush => :require
 
   desc "Flushes the initial empty files as a data set"
   task :flush_empty, :to do |t,args|
-    Seeder.new(db_handler).flush_empty(args[:to] || Time.now.strftime("%Y%M%d%H%M%S").to_s)
+    db_handler.seeder.flush_empty(args[:to] || Time.now.strftime("%Y%M%d%H%M%S").to_s)
   end
   task :flush_empty => :require
 

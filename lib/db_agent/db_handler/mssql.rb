@@ -1,6 +1,7 @@
 module DbAgent
   class DbHandler
     class MSSQL < DbHandler
+      include Relational
 
       def create
         raise

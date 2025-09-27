@@ -3,6 +3,8 @@
 module DbAgent
   class DbHandler
     class MySQL < DbHandler
+      include Relational
+
       def create
         shell mysql('-e', "'CREATE DATABASE #{config[:database]}'")
       end
