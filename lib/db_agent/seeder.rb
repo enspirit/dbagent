@@ -13,20 +13,18 @@ module DbAgent
         before_seeding!
 
         seed_folder = data_folder.seed_folder(from)
-
-        # load files in order
-        pairs = seed_folder.seed_files_per_table
+        seed_files = seed_folder.seed_files_per_table
 
         # Truncate tables
-        pairs.keys.reverse.each do |table|
+        seed_files.keys.reverse.each do |table|
           LOGGER.info("Emptying table `#{table}`")
           handler.sequel_db[table].delete
         end
 
         # Fill them
-        pairs.keys.each do |table|
+        seed_files.keys.each do |table|
           LOGGER.info("Filling table `#{table}`")
-          file = pairs[table]
+          file = seed_files[table]
           data = file.load
           raise "Empty file: #{file}" if data.nil?
 
@@ -39,13 +37,11 @@ module DbAgent
 
     def insert_script(from)
       seed_folder = data_folder.seed_folder(from)
-
-      # load files in order
-      pairs = seed_folder.seed_files_per_table
+      seed_files = seed_folder.seed_files_per_table
 
       # Fill them
-      pairs.keys.each do |table|
-        file = pairs[table]
+      seed_files.keys.each do |table|
+        file = seed_files[table]
         data = file.load
         next if data.empty?
 
