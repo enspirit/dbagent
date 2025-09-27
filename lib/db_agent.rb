@@ -53,8 +53,7 @@ module DbAgent
   end
 
   # What database configuration to use for superuser access
-  def self.default_superconfig
-    cfg = default_config
+  def self.default_superconfig(cfg = default_config)
     cfg.merge({
       user:     ENV['DBAGENT_SUPER_USER']     || cfg[:user],
       database: ENV['DBAGENT_SUPER_DB']       || cfg[:database],
@@ -63,9 +62,10 @@ module DbAgent
   end
 
   def self.default_handler
+    cfg = default_config
     DbHandler.factor({
-      config: default_config,
-      superconfig: default_superconfig,
+      config: cfg,
+      superconfig: default_superconfig(cfg),
       root: ROOT_FOLDER,
       migrations_table: ENV['DBAGENT_MIGRATIONS_TABLE'],
       superuser_migrations_table: ENV['DBAGENT_SUPERUSER_MIGRATIONS_TABLE']
