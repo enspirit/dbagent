@@ -23,7 +23,7 @@ module DbAgent
         expect(subject).to be_a(DataFolder)
       end
 
-      it 'helps getting merged_data' do
+      it 'helps getting seed files per table' do
         seed_folder = subject.seed_folder('base')
         expect(seed_folder.seed_files_per_table).to eql({
           :suppliers => root/'data/base/100-suppliers.json',
@@ -39,6 +39,32 @@ module DbAgent
       end
     end
 
+    context 'on a multi-db and base seed' do
+      let(:root) {
+        Path.backfind('.[Gemfile]')/'examples/multi-db'
+      }
+
+      it 'helps getting seed files per table' do
+        seed_folder = subject.seed_folder('base', 'db1')
+        expect(seed_folder.seed_files_per_table).to eql({
+          :todo => root/'data/base/db1/01-todo.json',
+        })
+      end
+
+
+      it 'helps getting before and after seeding files' do
+        seed_folder = subject.seed_folder('base', 'db1')
+        expect(seed_folder.before_seeding_files).to eql([
+          root/'data/empty/db1/before_seeding.sql',
+          root/'data/base/db1/before_seeding.sql',
+        ])
+        expect(seed_folder.after_seeding_files).to eql([
+          root/'data/empty/db1/after_seeding.sql',
+          root/'data/base/db1/after_seeding.sql',
+        ])
+      end
+    end
+
     context 'on a singledb and hooks seed' do
       let(:root) {
         Path.backfind('.[Gemfile]')/'examples/suppliers-and-parts'
@@ -48,7 +74,7 @@ module DbAgent
         expect(subject).to be_a(DataFolder)
       end
 
-      it 'helps getting merged_data' do
+      it 'helps getting seed files per table' do
         seed_folder = subject.seed_folder('hooks')
         expect(seed_folder.seed_files_per_table).to eql({
           :suppliers => root/'data/base/100-suppliers.json',

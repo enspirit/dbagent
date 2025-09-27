@@ -6,8 +6,8 @@ module DbAgent
     end
     attr_reader :db_handler
 
-    def seed_folder(seed)
-      SeedFolder.new(self, seed)
+    def seed_folder(seed, database = nil)
+      SeedFolder.new(self, seed, database)
     end
 
   end # class DataFolder
