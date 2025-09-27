@@ -1,0 +1,14 @@
+version: '2'
+
+services:
+
+  postgres:
+    image: postgres:15
+    ports:
+    - 5432:5432
+    environment:
+      POSTGRES_USER: dbagent
+      POSTGRES_PASSWORD: dbagent
+      POSTGRES_DB: suppliers-and-parts
+    volumes:
+      - ./volumes/pgdata:/var/lib/postgresql/data
