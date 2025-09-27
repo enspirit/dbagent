@@ -1,9 +1,10 @@
+require "rspec/core/rake_task"
 namespace :test do
 
-  desc %q{Run all RSpec tests}
-  task :unit do
-    require 'rspec'
-    RSpec::Core::Runner.run(%w[-I. -Ilib -Ispec --pattern=spec/**/test_*.rb --color .])
+  desc "Runs unit tests"
+  RSpec::Core::RakeTask.new(:unit) do |t|
+    t.pattern = "spec/**/test_*.rb"
+    t.rspec_opts = ["-Ilib", "-Ispec", "--color", "--backtrace", "--format=progress"]
   end
 
   task :all => :"unit"

@@ -26,6 +26,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'base64', '~> 0.3'
 
   s.add_development_dependency 'bundler', '~> 2'
-  s.add_development_dependency 'rspec', '~> 3'
+  s.add_development_dependency 'rspec', '~> 3.6'
   s.add_development_dependency 'rack-test', '~> 1'
 end
