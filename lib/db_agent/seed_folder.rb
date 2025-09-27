@@ -5,8 +5,9 @@ module DbAgent
     def initialize(data_folder, seed = 'empty')
       @data_folder = data_folder
       @seed = seed
+      @metadata = (folder(seed)/"metadata.json").load
     end
-    attr_reader :data_folder, :seed
+    attr_reader :data_folder, :seed, :metadata
 
     def db_handler
       data_folder.db_handler
@@ -16,9 +17,29 @@ module DbAgent
       db_handler.data_folder/seed
     end
 
+    def parent
+      @parent ||= if inherits = metadata["inherits"]
+        SeedFolder.new(data_folder, inherits)
+      else
+        NullObject.new(data_folder)
+      end
+    end
+
+    def before_seeding_files
+      f = (folder/'before_seeding.sql')
+      fs = f.file? ? [f] : []
+      parent.before_seeding_files + fs
+    end
+
+    def after_seeding_files
+      f = (folder/'after_seeding.sql')
+      fs = f.file? ? [f] : []
+      parent.after_seeding_files + fs
+    end
+
     # Returns a Hash[Sequel.qualify(table_name) => Path]
     def seed_files_per_table
-      pairs = _seed_files_per_table(seed)
+      pairs = _seed_files_per_table
       pairs
         .keys
         .sort{|p1,p2|
@@ -29,23 +50,30 @@ module DbAgent
         end
     end
 
-    def _seed_files_per_table(seed)
+    def _seed_files_per_table
       folder = self.folder(seed)
-      data = {}
-
-      # load metadata and install parent dataset if any
-      metadata = (folder/"metadata.json").load
-      if parent = metadata["inherits"]
-        data = _seed_files_per_table(parent)
-      end
+      map = parent._seed_files_per_table
 
       seed_files(folder).each do |f|
-        data[file2table(f)] = f
+        map[file2table(f)] = f
       end
 
-      data
+      map
     end
-    private :_seed_files_per_table
+    protected :_seed_files_per_table
 
+    class NullObject < SeedFolder
+      def _seed_files_per_table
+        {}
+      end
+
+      def before_seeding_files
+        []
+      end
+
+      def after_seeding_files
+        []
+      end
+    end
   end # class SeedFolder
 end # module DbAgent

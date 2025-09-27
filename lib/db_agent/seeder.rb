@@ -9,11 +9,11 @@ module DbAgent
     attr_reader :handler, :data_folder
 
     def install(from)
-      handler.sequel_db.transaction do
-        before_seeding!
+      seed_folder = data_folder.seed_folder(from)
+      seed_files = seed_folder.seed_files_per_table
 
-        seed_folder = data_folder.seed_folder(from)
-        seed_files = seed_folder.seed_files_per_table
+      handler.sequel_db.transaction do
+        before_seeding!(seed_folder)
 
         # Truncate tables
         seed_files.keys.reverse.each do |table|
@@ -111,17 +111,16 @@ module DbAgent
 
   private
 
-    def before_seeding!
-      file = handler.data_folder/"before_seeding.sql"
-      return unless file.exists?
-
-      handler.sequel_db.execute(file.read)
+    def before_seeding!(seed_folder)
+      seed_folder.before_seeding_files.each do |file|
+        handler.sequel_db.execute(file.read)
+      end
     end
 
-    def after_seeding!(seed_folder, folder = seed_folder.folder)
-      file = folder/"after_seeding.sql"
-      handler.sequel_db.execute(file.read) if file.exists?
-      after_seeding!(seed_folder, folder.parent) unless folder == handler.data_folder
+    def after_seeding!(seed_folder)
+      seed_folder.after_seeding_files.each do |file|
+        handler.sequel_db.execute(file.read)
+      end
     end
 
     def viewpoint
