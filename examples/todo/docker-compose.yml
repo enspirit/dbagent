@@ -11,7 +11,8 @@ services:
   postgres:
     image: postgres:9.5
     environment:
-      POSTGRES_USER: todo
+      POSTGRES_USER: dbagent
+      POSTGRES_PASSWORD: dbagent
       POSTGRES_DB: todo
     volumes:
       - ./.volumes/pgdata:/var/lib/postgresql/data
@@ -31,5 +32,6 @@ services:
       - ./data:/home/app/data
       - ./schema:/home/app/schema
     environment:
-      DBAGENT_USER: todo
+      DBAGENT_USER: dbagent
+      DBAGENT_PASSWORD: dbagent
       DBAGENT_DB: todo

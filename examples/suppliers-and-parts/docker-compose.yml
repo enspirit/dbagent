@@ -12,6 +12,7 @@ services:
     image: postgres:15
     environment:
       POSTGRES_USER: dbagent
+      POSTGRES_PASSWORD: dbagent
       POSTGRES_DB: suppliers-and-parts
     volumes:
       - ./.volumes/pgdata:/var/lib/postgresql/data
@@ -33,4 +34,5 @@ services:
     environment:
       DBAGENT_HOST: postgres
       DBAGENT_USER: dbagent
+      DBAGENT_PASSWORD: dbagent
       DBAGENT_DB: suppliers-and-parts

@@ -11,9 +11,9 @@ services:
   postgres:
     image: postgres:15
     environment:
-      POSTGRES_USER: postgres
+      POSTGRES_USER: dbagent
+      POSTGRES_PASSWORD: dbagent
       POSTGRES_DB: postgres
-      POSTGRES_PASSWORD: password
     ports:
       - 5432:5432
     volumes:
@@ -36,6 +36,6 @@ services:
       - ./schema:/home/app/schema
     environment:
       DBAGENT_HOST: postgres
-      DBAGENT_USER: postgres
+      DBAGENT_USER: dbagent
+      DBAGENT_PASSWORD: dbagent
       DBAGENT_DB: postgres
-      DBAGENT_PASSWORD: password
