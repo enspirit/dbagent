@@ -2,24 +2,32 @@ module DbAgent
   class SeedFolder
     include SeedUtils
 
-    def initialize(data_folder, seed = 'empty')
+    def initialize(data_folder, seed = 'empty', database = nil)
       @data_folder = data_folder
+      @database = database
       @seed = seed
-      @metadata = (folder(seed)/"metadata.json").load
     end
-    attr_reader :data_folder, :seed, :metadata
+    attr_reader :data_folder, :seed
 
     def db_handler
       data_folder.db_handler
     end
 
+    def metadata
+      @metadata ||= (folder(seed)/"metadata.json").load
+    end
+
     def folder(seed = self.seed)
-      db_handler.data_folder/seed
+      if @database
+        db_handler.data_folder/seed/@database
+      else
+        db_handler.data_folder/seed
+      end
     end
 
     def parent
       @parent ||= if inherits = metadata["inherits"]
-        SeedFolder.new(data_folder, inherits)
+        SeedFolder.new(data_folder, inherits, @database)
       else
         NullObject.new(data_folder)
       end

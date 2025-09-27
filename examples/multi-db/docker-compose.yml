@@ -1,0 +1,41 @@
+version: '2'
+
+services:
+
+  # The `postgres` agent is simply a PostgreSQL database. This agent may be
+  # replaced by a real database service, such as AWS RDS, provided the
+  # configuration of the other agents is adapted below.
+  #
+  # We keep the files in a mounted volume to keep the database state accross
+  # executions.
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - 5432:5432
+    volumes:
+      - ./initdb:/docker-entrypoint-initdb.d
+      - ./volumes/pgdata:/var/lib/postgresql/data
+
+  # The `database` agent is the logical DbAgent tool. The agent is NOT intended to
+  # be started in production.
+  #
+  # Mounted volume is just a handy tool to hack on source code in development
+  # mode.
+  dbagent:
+    build: .
+    ports:
+      - 8080:80
+    volumes:
+      - ./backups:/home/app/backups
+      - ./migrations:/home/app/migrations
+      - ./data:/home/app/data
+      - ./schema:/home/app/schema
+    environment:
+      DBAGENT_HOST: postgres
+      DBAGENT_USER: postgres
+      DBAGENT_DB: postgres
+      DBAGENT_PASSWORD: password
