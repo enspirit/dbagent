@@ -55,3 +55,6 @@ package:
 
 gem.push:
 	ls pkg/dbagent*.gem | xargs gem push
+
+clean:
+	find . -name .volumes | xargs rm -rf

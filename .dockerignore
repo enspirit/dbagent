@@ -1,4 +1,4 @@
 .bundle
 **/vendor/bundle
-**/volumes
+**/.volumes
 /examples

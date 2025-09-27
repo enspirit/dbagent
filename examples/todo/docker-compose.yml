@@ -14,7 +14,7 @@ services:
       POSTGRES_USER: todo
       POSTGRES_DB: todo
     volumes:
-      - ./volumes/pgdata:/var/lib/postgresql/data
+      - ./.volumes/pgdata:/var/lib/postgresql/data
 
   # The `database` agent is the logical DbAgent tool. The agent is NOT intended to
   # be started in production.

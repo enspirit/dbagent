@@ -18,7 +18,7 @@ services:
       - 5432:5432
     volumes:
       - ./initdb:/docker-entrypoint-initdb.d
-      - ./volumes/pgdata:/var/lib/postgresql/data
+      - ./.volumes/pgdata:/var/lib/postgresql/data
 
   # The `database` agent is the logical DbAgent tool. The agent is NOT intended to
   # be started in production.
