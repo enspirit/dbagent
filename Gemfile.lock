@@ -33,7 +33,7 @@ GEM
     predicate (2.8.0)
       minitest (>= 5.0)
       sexpr (~> 1.1)
-    rack (2.2.8.1)
+    rack (2.2.18)
     rack-protection (2.2.4)
       rack
     rack-test (1.1.0)
