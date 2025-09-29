@@ -71,7 +71,7 @@ namespace :db do
 
   desc "Checks that all seeds can be installed correctly"
   task :"check-seeds" do
-    db_handler.seeder.check_seeds(true)
+    db_handler.seeder.check_seeds
   end
   task :"check-seeds" => :require
 

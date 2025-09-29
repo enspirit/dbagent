@@ -14,7 +14,7 @@ module DbAgent
       def flush(to)
       end
 
-      def check_seeds(install = true)
+      def check_seeds
       end
 
     end # module Actions

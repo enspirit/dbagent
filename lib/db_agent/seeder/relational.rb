@@ -75,19 +75,16 @@ module DbAgent
         end
       end
 
-      def check_seeds(install = true)
-        data_folder.glob('**/*') do |file|
-          next unless file.directory?
-          next unless (file/"metadata.json").exists?
-
-          base = file.relative_to(data_folder.path)
+      def check_seeds
+        data_folder.seed_folders.each do |file|
+          base = file.relative_to(data_folder.path).to_s
           begin
-            handler.seeder.install(base)
-            puts "#{base} OK"
+            install(base)
+            puts "#{database_suffix}/#{base} OK"
           rescue => ex
-            puts "KO on #{file}"
+            puts "KO on #{database_suffix}/#{base}"
             puts ex.message
-          end if install
+          end
         end
       end
 
