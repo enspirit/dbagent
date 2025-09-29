@@ -17,9 +17,9 @@ module DbAgent
 
           # Fill them
           seed_files.keys.each do |table|
-            LOGGER.info("Filling table `#{table}`")
             file = seed_files[table]
             data = file.load
+            LOGGER.info("Filling table `#{table}` from #{file}")
             raise "Empty file: #{file}" if data.nil?
 
             sequel_db[table].multi_insert(data)
@@ -104,12 +104,14 @@ module DbAgent
 
       def before_seeding!(seed_folder)
         seed_folder.before_seeding_files.each do |file|
+          LOGGER.info("Executing `#{file}`")
           sequel_db.execute(file.read)
         end
       end
 
       def after_seeding!(seed_folder)
         seed_folder.after_seeding_files.each do |file|
+          LOGGER.info("Executing `#{file}`")
           sequel_db.execute(file.read)
         end
       end

@@ -5,6 +5,9 @@
 
 * The webapp now returns a friendly error message when seeding fails.
 
+* Logs shgow which .sql and .json files are used when seeding, for easier
+  debugging
+
 ## 3.8.3 - 2024-06-11
 
 * Add support for migrations table configuration.
