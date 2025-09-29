@@ -59,19 +59,20 @@ module DbAgent
         end
       end
 
-      def flush(to)
-        target = data_folder.seed_folder(to).path.rm_rf.mkdir_p
-        source = data_folder.seed_folder('empty')
-        seed_files = source.seed_files_per_table
+      def flush(to, inherits = "empty")
+        target_path = data_folder.seed_folder(to).path.rm_rf.mkdir_p
+        inherit_seed = data_folder.seed_folder(inherits)
+        inherit_path = inherit_seed.path
+        seed_files = inherit_seed.seed_files_per_table
 
-        (target/"metadata.json").write <<-JSON.strip
-          { "inherits": "empty" }
+        (target_path/"metadata.json").write <<-JSON.strip
+          { "inherits": "#{inherits}" }
         JSON
 
-        seed_files.each_pair do |table_name, source_file|
-          target_file = target/source_file.basename.to_s
+        seed_files.each_pair do |table_name, inherit_file|
+          target_file = target_path/inherit_file.basename.to_s
           table = file2table(target_file)
-          flush_table(table, target_file, true)
+          flush_table(table, target_file, inherit_file)
         end
       end
 
@@ -90,16 +91,26 @@ module DbAgent
 
     private
 
-      def flush_table(table, target_file, skip_empty)
+      def flush_table(table, target_file, inherit_file)
         data = viewpoint.send(table.gsub(/\./, '__').to_sym).to_a
         table_name = qualify_table(table)
-        if data.empty? && skip_empty
-          LOGGER.info("Skipping table `#{table_name}` since empty")
+        if data.empty?
+          LOGGER.info("Skipping table `#{table_name}`: empty")
+        elsif same_data?(inherit_file, data)
+          LOGGER.info("Skipping table `#{table_name}`: same as inherited one")
         else
           LOGGER.info("Flushing table `#{table_name}`")
           json = JSON.pretty_generate(data)
           target_file.write(json)
         end
+      end
+
+      def same_data?(inherit_file, data)
+        return false unless inherit_file.file?
+
+        r = Bmg.json(inherit_file)
+        s = Bmg.in_memory(data)
+        r.to_set == s.to_set
       end
 
       def before_seeding!(seed_folder)

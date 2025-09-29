@@ -1,4 +1,9 @@
-## 3.9.0
+## 3.9.1
+
+* `rake db:flush` now supports a second argument, which is the seed to inherit
+  from. Tables whose data is unchanged are no longer flushed on disk.
+
+## 3.9.0 - 2025-09-29
 
 * Add support for multiple databases, via a DBAGENT_DATABASES environment
   variables

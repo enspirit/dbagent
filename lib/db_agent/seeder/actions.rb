@@ -11,7 +11,7 @@ module DbAgent
       def flush_empty(to = "empty")
       end
 
-      def flush(to)
+      def flush(to, inherits = "empty")
       end
 
       def check_seeds

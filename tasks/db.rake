@@ -88,8 +88,9 @@ namespace :db do
   task :insert_script => :require
 
   desc "Flushes the database as a particular data set"
-  task :flush, :to do |t,args|
-    db_handler.seeder.flush(args[:to] || Time.now.strftime("%Y%M%d%H%M%S").to_s)
+  task :flush, [:to, :inherits] do |t,args|
+    args.with_defaults(:to => Time.now.strftime("%Y%M%d%H%M%S").to_s, :inherits => "empty")
+    db_handler.seeder.flush(args[:to], args[:inherits])
   end
   task :flush => :require
 
