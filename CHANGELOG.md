@@ -1,5 +1,8 @@
 ## 3.9.0
 
+* Add support for multiple databases, via a DBAGENT_DATABASES environment
+  variables
+
 * Add DbHandler#fork and DbHandler#fork_config to ease with multiple databases
   setups.
 

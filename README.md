@@ -27,6 +27,7 @@ See the examples folder for details.
 * `DBAGENT_DB`                         Database name (defaults to `suppliers-and-parts`)
 * `DBAGENT_USER`                       Database user (defaults to `dbagent`)
 * `DBAGENT_PASSWORD`                   Database password (defaults to `dbagent`)
+* `DBAGENT_DATABASES`                  List of database names for multi-db mode (no default)
 * `DBAGENT_SOCKET`                     Database server socket (if host/port is not used)
 * `DBAGENT_SUPER_USER`                 Superuser name (postgres only)
 * `DBAGENT_SUPER_DB`                   Superuser database (postgres only)
@@ -67,6 +68,20 @@ GET  /schema/                # Browser the database schema (requires a former `r
 POST /seeds/install?id=...   # Install a particular dataset, id is the name of a folder in `data` folder
 POST /seeds/flush?id=...     # Flushes the current database content as a named dataset
 ```
+
+## Multiple databases mode
+
+DbAgent supports managing multiple databases within the same directory structure via the (optional) `DBAGENT_DATABASES`
+environment variables. We only support multiple databases on the same server with the same user/password pair, for now.
+
+In multiple database mode, migrations and seeds simply have the database name as intermediate folder. For instance
+`data/empty/db1` and `data/empty/db2` (see `examples/multi-db`).
+
+All rake tasks will be execute on each database, in turn. For instance, `bundle exec rake db:ping` will ping each
+database in turn.
+
+The `DBAGENT_DATABASES` env var may contain a commalist of database names. You can also set it to `/from-empty-seeds`
+for auto-discovery. In that case, your empty seed must contain a folder for each database, with the same name.
 
 ## Hacking on dbagent
 
