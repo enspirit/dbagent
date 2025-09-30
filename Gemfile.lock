@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    dbagent (3.9.0)
+    dbagent (3.9.1)
       base64 (~> 0.3)
       bmg (~> 0.23.5)
       net-ping (~> 2)

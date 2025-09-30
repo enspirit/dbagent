@@ -1,4 +1,4 @@
-## 3.9.1
+## 3.9.1 - 2025-09-30
 
 * `rake db:flush` now supports a second argument, which is the seed to inherit
   from. Tables whose data is unchanged are no longer flushed on disk.
