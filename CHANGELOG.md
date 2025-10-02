@@ -1,3 +1,10 @@
+## 3.9.2
+
+* Fix Composite to avoid creating new database connecions everytime a seed is
+  done on web api.
+
+* Moved to puma instead of thin, with only one thread.
+
 ## 3.9.1 - 2025-09-30
 
 * `rake db:flush` now supports a second argument, which is the seed to inherit

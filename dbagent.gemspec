@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'bmg', '~> 0.23.5'
   s.add_dependency 'net-ping', "~> 2"
   s.add_dependency "predicate", "~> 2", ">= 2.7.1"
-  s.add_dependency 'thin', '~> 1'
+  s.add_dependency 'puma', '>= 6.1.1', '< 7.0'
   s.add_dependency 'base64', '~> 0.3'
 
   s.add_development_dependency 'bundler', '~> 2'

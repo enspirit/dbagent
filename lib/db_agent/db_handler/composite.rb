@@ -2,14 +2,15 @@ module DbAgent
   class DbHandler
     class Composite < DbHandler
 
+      def initialize(*args)
+        super
+        @handlers ||= {}
+      end
+
       def each_db_handler
         database_names.each do |name|
-          yield(name, self.fork_config(database: name).fork({
-            databases: nil,
-            backup: @backup_folder/name,
-            schema: @schema_folder/name,
-            migrations: @migrations_folder/name,
-          }))
+          handler = handler_for(name)
+          yield(name, handler)
         end
       end
 
@@ -34,6 +35,15 @@ module DbAgent
 
       def seeder(database_suffix = nil)
         Seeder::Composite.new(self)
+      end
+
+      def handler_for(name)
+        @handlers[name] ||= self.fork_config(database: name).fork({
+          databases: nil,
+          backup: @backup_folder/name,
+          schema: @schema_folder/name,
+          migrations: @migrations_folder/name,
+        })
       end
 
     end # class Composite

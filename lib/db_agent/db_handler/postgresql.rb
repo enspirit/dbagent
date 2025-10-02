@@ -15,6 +15,7 @@ module DbAgent
 
       def backup
         datetime = Time.now.strftime("%Y%m%dT%H%M%S")
+        backup_folder.mkdir_p
         shell pg_dump("--clean", config[:database], "> #{backup_folder}/backup-#{datetime}.sql")
       end
 

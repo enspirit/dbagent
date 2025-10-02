@@ -33,4 +33,4 @@ RUN mkdir -p /home/app/vendor && \
 
 COPY --chown=app:app . /home/app
 
-CMD bundle exec rackup -p 9292 -o 0.0.0.0
+CMD bundle exec puma -t 1:1 -p 9292
