@@ -1,4 +1,4 @@
-## 3.9.2
+## 3.9.2 - 2025-10-02
 
 * Fix Composite to avoid creating new database connecions everytime a seed is
   done on web api.
