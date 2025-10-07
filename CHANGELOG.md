@@ -1,3 +1,7 @@
+## 3.9.3
+
+* Don't use a composite if DBAGENT_DATABASES is present but empty
+
 ## 3.9.2 - 2025-10-02
 
 * Fix Composite to avoid creating new database connecions everytime a seed is

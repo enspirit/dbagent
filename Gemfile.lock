@@ -1,17 +1,17 @@
 PATH
   remote: .
   specs:
-    dbagent (3.9.1)
+    dbagent (3.9.2)
       base64 (~> 0.3)
       bmg (~> 0.23.5)
       net-ping (~> 2)
       path (~> 2)
       pg (~> 1)
       predicate (~> 2, >= 2.7.1)
+      puma (>= 6.1.1, < 7.0)
       rake (~> 13)
       sequel (~> 5)
       sinatra (~> 2)
-      thin (~> 1)
 
 GEM
   remote: http://rubygems.org/
@@ -21,13 +21,12 @@ GEM
     bmg (0.23.5)
       path (>= 2.0)
       predicate (>= 2.7.1, < 3.0)
-    daemons (1.4.1)
     diff-lcs (1.6.2)
-    eventmachine (1.2.7)
     minitest (5.25.5)
     mustermann (2.0.2)
       ruby2_keywords (~> 0.0.1)
     net-ping (2.0.8)
+    nio4r (2.7.4)
     path (2.1.0)
     pg (1.6.2)
     pg (1.6.2-aarch64-linux)
@@ -40,6 +39,8 @@ GEM
     predicate (2.9.0)
       minitest (>= 5.0)
       sexpr (~> 1.1)
+    puma (6.6.1)
+      nio4r (~> 2.0)
     rack (2.2.18)
     rack-protection (2.2.4)
       rack
@@ -68,10 +69,6 @@ GEM
       rack (~> 2.2)
       rack-protection (= 2.2.4)
       tilt (~> 2.0)
-    thin (1.8.2)
-      daemons (~> 1.0, >= 1.0.9)
-      eventmachine (~> 1.0, >= 1.0.4)
-      rack (>= 1, < 3)
     tilt (2.6.1)
 
 PLATFORMS

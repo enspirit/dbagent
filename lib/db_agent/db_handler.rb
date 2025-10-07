@@ -21,7 +21,7 @@ module DbAgent
     attr_reader :migrations_table, :superuser_migrations_table
 
     def self.factor(options)
-      if options[:databases]
+      if options[:databases] && !options[:databases].to_s.strip.empty?
         Composite.new(options)
       else
         case options[:config][:adapter]
