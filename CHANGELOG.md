@@ -1,4 +1,4 @@
-## 3.9.3
+## 3.9.3 - 2025-10-07
 
 * Don't use a composite if DBAGENT_DATABASES is present but empty
 
