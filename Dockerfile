@@ -1,4 +1,4 @@
-FROM ruby:3.3
+FROM ruby:3.4
 
 ENV LANG C.UTF-8
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
