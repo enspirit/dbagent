@@ -1,4 +1,4 @@
-## 3.9.4
+## 3.9.4 - 2025-10-07
 
 * Use ruby 3.4 as base docker image
 
