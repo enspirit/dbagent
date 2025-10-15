@@ -1,3 +1,8 @@
+## 3.9.5
+
+* The seeder now considers the same json string as being same table data, which
+  is complementary to a set comparison (because of timezone irrelevant differences).
+
 ## 3.9.4 - 2025-10-07
 
 * Use ruby 3.4 as base docker image

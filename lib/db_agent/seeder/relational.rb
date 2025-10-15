@@ -110,7 +110,9 @@ module DbAgent
 
         r = Bmg.json(inherit_file)
         s = Bmg.in_memory(data)
-        r.to_set == s.to_set
+        same_set = (r.to_set == s.to_set)
+        same_json = !same_set && (r.to_json == s.to_json)
+        same_set || same_json
       end
 
       def before_seeding!(seed_folder)
