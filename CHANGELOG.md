@@ -1,4 +1,4 @@
-## 3.9.6
+## 3.9.6 - 2025-10-16
 
 * Files dumped by db:flush are now sorted by primary key if possible.
 
