@@ -1,3 +1,7 @@
+## 3.9.6
+
+* Files dumped by db:flush are now sorted by primary key if possible.
+
 ## 3.9.5 - 2025-10-15
 
 * The seeder now considers the same json string as being same table data, which

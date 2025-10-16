@@ -92,7 +92,8 @@ module DbAgent
     private
 
       def flush_table(table, target_file, inherit_file)
-        data = viewpoint.send(table.gsub(/\./, '__').to_sym).to_a
+        rel = viewpoint.send(table.gsub(/\./, '__').to_sym)
+        data = order_data(target_file, rel)
         table_name = qualify_table(table)
         if data.empty?
           LOGGER.info("Skipping table `#{table_name}`: empty")
@@ -113,6 +114,19 @@ module DbAgent
         same_set = (r.to_set == s.to_set)
         same_json = !same_set && (r.to_json == s.to_json)
         same_set || same_json
+      end
+
+      def order_data(file, rel)
+        tuples = rel.to_a
+        return tuples unless rel.type.knows_keys?
+
+        keys = rel.type.keys.sort{|k1,k2| k1.size <=> k2.size }
+        ordering = Bmg::Ordering.new(keys.first)
+
+        tuples.sort{|t1,t2| ordering.call(t1, t2) }
+      rescue => ex
+        puts "Error when trying to sort `#{file}` (#{ex.message})"
+        rel.to_a
       end
 
       def before_seeding!(seed_folder)
