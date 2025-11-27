@@ -1,3 +1,8 @@
+## 3.9.7
+
+* DBAGENT_IGNORED_FLUSH_FIELDS allows specifying fields to ignore when db:flush
+  compares data to know whether a table has changed.
+
 ## 3.9.6 - 2025-10-16
 
 * Files dumped by db:flush are now sorted by primary key if possible.

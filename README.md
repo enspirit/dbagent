@@ -36,6 +36,7 @@ See the examples folder for details.
 * `DBAGENT_VIEWPOINT`                  Bmg viewpoint (class name) when using db:flush
 * `DBAGENT_MIGRATIONS_TABLE`           The table containing the list of migrations (defaults to `schema_migrations`)
 * `DBAGENT_SUPERUSER_MIGRATIONS_TABLE` The table containing the list of superuser migrations (defaults to `superuser_migrations`)
+* `DBAGENT_IGNORED_FLUSH_FIELDS`.      Fields ignored when db:flush compares data to dump/skip a table
 
 ## Available rake tasks
 

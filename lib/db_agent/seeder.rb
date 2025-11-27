@@ -9,6 +9,13 @@ module DbAgent
     end
     attr_reader :handler, :data_folder, :database_suffix
 
+    def ignored_flush_fields
+      @ignored_flush_fields ||= begin
+        ignored = ENV['DBAGENT_IGNORED_FLUSH_FIELDS'] || ''
+        ignored.split(/\s*,\s*/).map(&:to_sym)
+      end
+    end
+
   end # class Seeder
 end # module DbAgent
 require_relative 'seeder/actions'

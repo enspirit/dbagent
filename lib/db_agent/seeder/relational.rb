@@ -109,8 +109,8 @@ module DbAgent
       def same_data?(inherit_file, data)
         return false unless inherit_file.file?
 
-        r = Bmg.json(inherit_file)
-        s = Bmg.in_memory(data)
+        r = Bmg.json(inherit_file).allbut(ignored_flush_fields)
+        s = Bmg.in_memory(data).allbut(ignored_flush_fields)
         same_set = (r.to_set == s.to_set)
         same_json = !same_set && (r.to_json == s.to_json)
         same_set || same_json
