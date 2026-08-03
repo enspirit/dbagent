@@ -1,3 +1,8 @@
+## 3.9.8
+
+* insert_script now supports a single transaction, before and after seeding,
+  and skipping parent seed data.
+
 ## 3.9.7 - 2026-01-29
 
 * DBAGENT_IGNORED_FLUSH_FIELDS allows specifying fields to ignore when db:flush

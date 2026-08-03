@@ -29,9 +29,17 @@ module DbAgent
         end
       end
 
-      def insert_script(from)
+      def insert_script(from, include_parents: true)
         seed_folder = data_folder.seed_folder(from)
-        seed_files = seed_folder.seed_files_per_table
+        seed_files = seed_folder.seed_files_per_table(include_parents)
+
+        puts "BEGIN;"
+        puts
+
+        seed_folder.before_seeding_files(include_parents).each do |file|
+          puts file.read
+          puts
+        end
 
         # Fill them
         seed_files.keys.each do |table|
@@ -43,8 +51,17 @@ module DbAgent
           values = data.map{|t|
             keys.map{|k| t[k] }
           }
-          puts sequel_db[table].multi_insert_sql(keys, values)
+          puts sequel_db[table].multi_insert_sql(keys, values) << ';'
         end
+
+        puts
+        seed_folder.after_seeding_files(include_parents).each do |file|
+          puts file.read
+          puts
+        end
+
+        puts
+        puts "COMMIT;"
       end
 
       def flush_empty(to = "empty")

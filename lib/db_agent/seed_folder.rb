@@ -33,21 +33,21 @@ module DbAgent
       end
     end
 
-    def before_seeding_files
+    def before_seeding_files(include_parents = true)
       f = (path/'before_seeding.sql')
       fs = f.file? ? [f] : []
-      parent.before_seeding_files + fs
+      include_parents ? (parent.before_seeding_files(include_parents) + fs) : fs
     end
 
-    def after_seeding_files
+    def after_seeding_files(include_parents = true)
       f = (path/'after_seeding.sql')
       fs = f.file? ? [f] : []
-      parent.after_seeding_files + fs
+      include_parents ? (parent.after_seeding_files(include_parents) + fs) : fs
     end
 
     # Returns a Hash[Sequel.qualify(table_name) => Path]
-    def seed_files_per_table
-      pairs = _seed_files_per_table
+    def seed_files_per_table(include_parents = true)
+      pairs = _seed_files_per_table(include_parents)
       pairs
         .keys
         .sort{|p1,p2|
@@ -60,9 +60,9 @@ module DbAgent
 
   protected
 
-    def _seed_files_per_table
+    def _seed_files_per_table(include_parents = true)
       folder = self.path(seed)
-      map = parent._seed_files_per_table
+      map = include_parents ? parent._seed_files_per_table(include_parents) : {}
 
       seed_files(folder).each do |f|
         map[file2table(f)] = f
@@ -75,18 +75,19 @@ module DbAgent
       folder
         .glob("*.json")
         .reject{|f| f.basename.to_s =~ /^metadata/ }
+        .select{|f| f.basename.to_s =~ /^(\d+)-/ }
     end
 
     class NullObject < SeedFolder
-      def _seed_files_per_table
+      def _seed_files_per_table(include_parents = true)
         {}
       end
 
-      def before_seeding_files
+      def before_seeding_files(include_parents = true)
         []
       end
 
-      def after_seeding_files
+      def after_seeding_files(include_parents = true)
         []
       end
     end

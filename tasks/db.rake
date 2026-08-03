@@ -82,8 +82,9 @@ namespace :db do
   task :seed => :require
 
   desc "Prints an INSERT script for a particular data set"
-  task :insert_script, :from do |t,args|
-    db_handler.seeder.insert_script(args[:from] || 'empty')
+  task :insert_script, :from, :include_parents do |t,args|
+    include_parents = args[:include_parents] != 'false'
+    db_handler.seeder.insert_script(args[:from] || 'empty', include_parents: include_parents)
   end
   task :insert_script => :require
 

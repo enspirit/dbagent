@@ -5,7 +5,7 @@ module DbAgent
       def install(from)
       end
 
-      def insert_script(from)
+      def insert_script(from, include_parents: true)
       end
 
       def flush_empty(to = "empty")
