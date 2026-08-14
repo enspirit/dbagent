@@ -1,4 +1,4 @@
-## 3.9.8
+## 3.9.8 - 2026-08-14
 
 * insert_script now supports a single transaction, before and after seeding,
   and skipping parent seed data.
