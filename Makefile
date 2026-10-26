@@ -8,6 +8,7 @@ MAKEFLAGS += --no-builtin-rules
 
 DATA_PATH = $(PWD)/examples/suppliers-and-parts
 DOCKER_TAG := $(or ${DOCKER_TAG},${DOCKER_TAG},latest)
+DOCKER_PLATFORMS ?= linux/amd64,linux/arm64
 
 ps:
 	docker ps
@@ -15,8 +16,13 @@ ps:
 image:
 	docker build . -t enspirit/dbagent:${DOCKER_TAG}
 
-image.push: image
-	docker push enspirit/dbagent:${DOCKER_TAG}
+# Multi-arch build & push (requires a buildx builder supporting multiple platforms,
+# e.g. `docker buildx create --use` + qemu binfmt for cross builds)
+image.push:
+	docker buildx build . \
+		--platform ${DOCKER_PLATFORMS} \
+		-t enspirit/dbagent:${DOCKER_TAG} \
+		--push
 
 prepare: image
 	rm -rf .volumes
