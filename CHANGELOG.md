@@ -1,3 +1,8 @@
+## 3.9.9 - 2026-10-26
+
+* Docker images are now published for both linux/amd64 and linux/arm64
+  (Apple Silicon, ARM Linux hosts).
+
 ## 3.9.8 - 2026-08-14
 
 * insert_script now supports a single transaction, before and after seeding,
