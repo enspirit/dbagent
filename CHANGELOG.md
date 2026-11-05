@@ -1,3 +1,13 @@
+## 3.11.0 - 2026-11-05
+
+* New `Seeder#apply`, `rake db:apply` and `POST /seeds/apply`: the same seed
+  load as `install`, with no table emptied. What a seed replaces becomes the
+  seed's own decision, written as scoped deletes in its `before_seeding.sql`.
+  This is what lets a seed carrying a slice of the database — one project, one
+  tenant — be installed into, and later updated in, a database holding rows it
+  is not about. `include_parents` defaults to `false` there, a slice being
+  self-contained.
+
 ## 3.10.0 - 2026-11-05
 
 * `Seeder#install`, `POST /seeds/install` and `rake db:seed` now accept an
