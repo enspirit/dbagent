@@ -1,3 +1,20 @@
+## 3.10.0 - 2026-11-05
+
+* `Seeder#install`, `POST /seeds/install` and `rake db:seed` now accept an
+  `include_parents` flag (default `true`). With `include_parents=false`, only
+  the named seed's own tables are reset; inherited parent-seed tables are left
+  untouched. Splitting rarely-written reference data into a parent seed lets a
+  test suite reseed only the mutated tables between tests.
+
+* New (opt-in) `DBAGENT_SEED_DISABLE_TRIGGERS` environment variable. When set,
+  seeds are loaded with `session_replication_role = 'replica'`, which suppresses
+  user triggers and foreign key checks for the duration of the load, the way
+  `pg_dump --disable-triggers` does. Useful when a trigger derives rows the seed
+  already carries. PostgreSQL only, and requires superuser privileges.
+
+* Boolean flags passed as HTTP parameters, rake arguments or environment
+  variables now consistently understand `false`, `0`, `no` and `off`.
+
 ## 3.9.9 - 2026-10-26
 
 * Docker images are now published for both linux/amd64 and linux/arm64
