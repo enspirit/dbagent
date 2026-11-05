@@ -111,6 +111,30 @@ module DbAgent
           root/'data/hooks/child/after_seeding.sql',
         ])
       end
+
+      it 'skips the inherited before and after seeding files when asked so' do
+        seed_folder = data_folder.seed_folder('hooks/child')
+        expect(seed_folder.before_seeding_files(false)).to eql([
+          root/'data/hooks/child/before_seeding.sql',
+        ])
+        expect(seed_folder.after_seeding_files(false)).to eql([
+          root/'data/hooks/child/after_seeding.sql',
+        ])
+      end
+
+      it 'skips the inherited seed files when asked so' do
+        seed_folder = data_folder.seed_folder('hooks/child')
+        expect(seed_folder.seed_files_per_table(false)).to eql({})
+      end
+
+      it 'keeps the seed own files when skipping the inherited ones' do
+        seed_folder = data_folder.seed_folder('base')
+        expect(seed_folder.seed_files_per_table(false)).to eql({
+          :suppliers => root/'data/base/100-suppliers.json',
+          :parts => root/'data/base/200-parts.json',
+          Sequel.qualify(:public, :supplies) => root/'data/base/300-public.supplies.json',
+        })
+      end
     end
   end
 end

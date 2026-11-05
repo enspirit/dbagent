@@ -9,9 +9,9 @@ module DbAgent
       end
 
       Actions.public_instance_methods.each do |meth|
-        define_method(meth) do |*args, &bl|
+        define_method(meth) do |*args, **kwargs, &bl|
           each_db_seeder do |dbname, seeder|
-            seeder.send(meth, *args, &bl)
+            seeder.send(meth, *args, **kwargs, &bl)
           end
         end
       end

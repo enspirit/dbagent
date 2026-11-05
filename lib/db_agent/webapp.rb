@@ -28,7 +28,11 @@ module DbAgent
     end
 
     post '/seeds/install' do
-      settings.db_handler.seeder.install(request["id"])
+      # `include_parents` (default true) resets the inherited parent seeds too.
+      # Pass a falsy value to reset only the seed's own tables, leaving the
+      # (typically large, rarely-written) parent-seed tables in place.
+      include_parents = DbAgent.flag?(request["include_parents"])
+      settings.db_handler.seeder.install(request["id"], include_parents: include_parents)
       "ok"
     end
 

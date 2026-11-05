@@ -25,6 +25,19 @@ module DbAgent
   LOGGER = Logger.new(STDOUT)
   LOGGER.level = Logger.const_get(ENV['DBAGENT_LOGLEVEL'] || 'WARN')
 
+  # Spellings understood as `false` for boolean flags coming from the outside
+  # world (HTTP query strings, rake arguments, environment variables).
+  FALSY_FLAGS = %w[false 0 no off]
+
+  # Parses a boolean flag coming from an HTTP parameter, a rake argument or an
+  # environment variable. A missing or empty value yields `default`.
+  def self.flag?(value, default = true)
+    s = value.to_s.strip
+    return default if s.empty?
+
+    !FALSY_FLAGS.include?(s.downcase)
+  end
+
   # What database configuration to use for normal access
   def self.default_config
     cfg = {

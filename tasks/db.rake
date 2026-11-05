@@ -76,14 +76,15 @@ namespace :db do
   task :"check-seeds" => :require
 
   desc "Seeds the database with a particular data set"
-  task :seed, :from do |t,args|
-    db_handler.seeder.install(args[:from] || 'empty')
+  task :seed, :from, :include_parents do |t,args|
+    include_parents = DbAgent.flag?(args[:include_parents])
+    db_handler.seeder.install(args[:from] || 'empty', include_parents: include_parents)
   end
   task :seed => :require
 
   desc "Prints an INSERT script for a particular data set"
   task :insert_script, :from, :include_parents do |t,args|
-    include_parents = args[:include_parents] != 'false'
+    include_parents = DbAgent.flag?(args[:include_parents])
     db_handler.seeder.insert_script(args[:from] || 'empty', include_parents: include_parents)
   end
   task :insert_script => :require

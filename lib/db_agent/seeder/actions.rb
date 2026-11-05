@@ -2,7 +2,7 @@ module DbAgent
   class Seeder
     module Actions
 
-      def install(from)
+      def install(from, include_parents: true)
       end
 
       def insert_script(from, include_parents: true)

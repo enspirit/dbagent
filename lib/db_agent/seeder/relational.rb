@@ -2,16 +2,24 @@ module DbAgent
   class Seeder
     class Relational < Seeder
 
-      def install(from)
+      # Installs the `from` seed. When `include_parents` is false, only the
+      # seed's own tables are reset — the tables it inherits from its parent
+      # seed(s) are left untouched. Splitting rarely-written reference data into
+      # a parent seed and re-installing the child with `include_parents: false`
+      # thus skips reloading the (typically large) static tables. This mirrors
+      # the option `insert_script` already exposes.
+      def install(from, include_parents: true)
         seed_folder = data_folder.seed_folder(from)
-        seed_files = seed_folder.seed_files_per_table
+        seed_files = seed_folder.seed_files_per_table(include_parents)
 
         sequel_db.transaction do
-          before_seeding!(seed_folder)
+          disable_triggers! if disable_triggers?
 
-          # Truncate tables
+          before_seeding!(seed_folder, include_parents)
+
+          # Empty tables
           seed_files.keys.reverse.each do |table|
-            LOGGER.info("Emptying table `#{table}`")
+            LOGGER.info("Emptying table `#{sequel_db.literal(table)}`")
             sequel_db[table].delete
           end
 
@@ -19,13 +27,13 @@ module DbAgent
           seed_files.keys.each do |table|
             file = seed_files[table]
             data = file.load
-            LOGGER.info("Filling table `#{table}` from #{file}")
+            LOGGER.info("Filling table `#{sequel_db.literal(table)}` from #{file}")
             raise "Empty file: #{file}" if data.nil?
 
             sequel_db[table].multi_insert(data)
           end
 
-          after_seeding!(seed_folder)
+          after_seeding!(seed_folder, include_parents)
         end
       end
 
@@ -146,15 +154,42 @@ module DbAgent
         rel.to_a
       end
 
-      def before_seeding!(seed_folder)
-        seed_folder.before_seeding_files.each do |file|
+      # Whether to load the seed with user triggers (and foreign key checks)
+      # suppressed, as `pg_dump --disable-triggers` does.
+      #
+      # A seed is a complete snapshot: every derived row it needs is already in
+      # the data files. A trigger that derives rows (e.g. an AFTER INSERT on
+      # auth.users that also writes user_roles) therefore re-derives state the
+      # seed inserts itself, and the two collide. Suppressing triggers fixes
+      # that, but it is not free: foreign key violations within the seed go
+      # unnoticed, including those `rake db:check-seeds` exists to catch. Hence
+      # opt-in, and off by default.
+      def disable_triggers?
+        DbAgent.flag?(ENV['DBAGENT_SEED_DISABLE_TRIGGERS'], false)
+      end
+
+      def disable_triggers!
+        unless sequel_db.database_type == :postgres
+          LOGGER.warn("Ignoring DBAGENT_SEED_DISABLE_TRIGGERS: PostgreSQL only")
+          return
+        end
+
+        sequel_db.run("SET LOCAL session_replication_role = 'replica'")
+      rescue Sequel::DatabaseError => ex
+        raise "Unable to honor DBAGENT_SEED_DISABLE_TRIGGERS: setting " \
+              "`session_replication_role` requires superuser privileges " \
+              "(#{ex.message})"
+      end
+
+      def before_seeding!(seed_folder, include_parents = true)
+        seed_folder.before_seeding_files(include_parents).each do |file|
           LOGGER.info("Executing `#{file}`")
           sequel_db.execute(file.read)
         end
       end
 
-      def after_seeding!(seed_folder)
-        seed_folder.after_seeding_files.each do |file|
+      def after_seeding!(seed_folder, include_parents = true)
+        seed_folder.after_seeding_files(include_parents).each do |file|
           LOGGER.info("Executing `#{file}`")
           sequel_db.execute(file.read)
         end

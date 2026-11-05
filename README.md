@@ -37,6 +37,7 @@ See the examples folder for details.
 * `DBAGENT_MIGRATIONS_TABLE`           The table containing the list of migrations (defaults to `schema_migrations`)
 * `DBAGENT_SUPERUSER_MIGRATIONS_TABLE` The table containing the list of superuser migrations (defaults to `superuser_migrations`)
 * `DBAGENT_IGNORED_FLUSH_FIELDS`.      Fields ignored when db:flush compares data to dump/skip a table
+* `DBAGENT_SEED_DISABLE_TRIGGERS`      Load seeds with triggers & FK checks off (postgres only, see below)
 
 ## Available rake tasks
 
@@ -51,7 +52,7 @@ rake db:migrate              # Runs migrations on the current database
 rake db:ping                 # Pings the database, making sure everything's ready for migration
 rake db:rebuild              # Rebuilds the database from scratch (USE WITH CARE)
 rake db:repl                 # Opens a database REPL
-rake db:seed[from]           # Seeds the database with a particular data set
+rake db:seed[from,include_parents?]  # Seeds the database with a particular data set
 rake db:spy                  # Dumps the schema documentation into database/schema
 rake db:backup               # Makes a database backup to the backups folder
 rake db:restore[match]       # Restore the last matching database backup file from backups folder
@@ -69,6 +70,40 @@ GET  /schema/                # Browser the database schema (requires a former `r
 POST /seeds/install?id=...   # Install a particular dataset, id is the name of a folder in `data` folder
 POST /seeds/flush?id=...     # Flushes the current database content as a named dataset
 ```
+
+`POST /seeds/install` (and `rake db:seed`) accept an optional `include_parents`
+flag (default `true`). Seeds are organized hierarchically — a seed may `inherit`
+another via its `metadata.json`. With `include_parents=false`, only the tables
+of the named seed itself are reset; the tables coming from the inherited
+parent seed(s) are left untouched.
+
+This is useful to speed up test suites that reseed between every test: put the
+large, never-written reference tables in a parent seed (e.g. `test/core`) and
+the smaller, test-mutated tables in a child seed that inherits it (e.g.
+`test/base`). Reinstalling the child with `include_parents=false` then skips
+reloading the static reference data. It is only sound when the parent (static)
+tables are genuinely never written by the tests, and no parent table has a
+foreign key pointing into a child table.
+
+```
+POST /seeds/install?id=test/base&include_parents=false
+```
+
+### Seeding with triggers disabled
+
+A seed is a complete snapshot, so a trigger that derives rows (say, an
+`AFTER INSERT` on `users` that also writes `user_roles`) re-derives state the
+data files already carry, and the two collide. Setting
+`DBAGENT_SEED_DISABLE_TRIGGERS=true` makes `install` load seeds with
+`session_replication_role = 'replica'`, which suppresses user triggers and
+foreign key checks for the duration of the transaction — the same thing
+`pg_dump --disable-triggers` does.
+
+This is off by default, and worth keeping off unless you need it: with foreign
+key checks suppressed, referential errors inside a seed load silently, and
+`rake db:seed` / `rake db:check-seeds` stop reporting them. It is PostgreSQL
+only (ignored, with a warning, on other adapters) and setting
+`session_replication_role` requires superuser privileges on most servers.
 
 ## Multiple databases mode
 

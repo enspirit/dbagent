@@ -40,6 +40,8 @@ exec_test:
 		bundle exec rake test; \
 		bundle exec rake db:check-seeds; \
 		bundle exec rake db:seed[base]; \
+		bundle exec rake db:seed[base,false]; \
+		DBAGENT_SEED_DISABLE_TRIGGERS=true bundle exec rake db:seed[base]; \
 		bundle exec rake db:insert_script[base]; \
 		bundle exec rake db:flush[tmp]; \
 		rm -rf examples/suppliers-and-parts/data/tmp
