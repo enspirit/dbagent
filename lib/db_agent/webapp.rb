@@ -36,6 +36,15 @@ module DbAgent
       "ok"
     end
 
+    post '/seeds/apply' do
+      # Unlike `/seeds/install`, empties nothing: the seed's own before_seeding
+      # script is what decides which rows it replaces. `include_parents`
+      # defaults to false here, a slice seed being self-contained.
+      include_parents = DbAgent.flag?(request["include_parents"], false)
+      settings.db_handler.seeder.apply(request["id"], include_parents: include_parents)
+      "ok"
+    end
+
     post '/seeds/flush' do
       seed_name = request["id"]
       settings.db_handler.seeder.flush(request["id"])

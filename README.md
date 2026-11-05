@@ -53,6 +53,7 @@ rake db:ping                 # Pings the database, making sure everything's read
 rake db:rebuild              # Rebuilds the database from scratch (USE WITH CARE)
 rake db:repl                 # Opens a database REPL
 rake db:seed[from,include_parents?]  # Seeds the database with a particular data set
+rake db:apply[from,include_parents?] # Applies a data set without emptying any table
 rake db:spy                  # Dumps the schema documentation into database/schema
 rake db:backup               # Makes a database backup to the backups folder
 rake db:restore[match]       # Restore the last matching database backup file from backups folder
@@ -68,6 +69,7 @@ rake db:dependencies[of]     # List tables that depend of a given one
 ```
 GET  /schema/                # Browser the database schema (requires a former `rake db:spy`)
 POST /seeds/install?id=...   # Install a particular dataset, id is the name of a folder in `data` folder
+POST /seeds/apply?id=...     # Apply a particular dataset, emptying no table
 POST /seeds/flush?id=...     # Flushes the current database content as a named dataset
 ```
 
@@ -88,6 +90,32 @@ foreign key pointing into a child table.
 ```
 POST /seeds/install?id=test/base&include_parents=false
 ```
+
+### Applying a slice to a database that already holds data
+
+`install` empties every table the seed names before refilling it, so it can
+only ever be pointed at a database whose entire content *is* that seed — never
+at a production one. `rake db:apply` / `POST /seeds/apply` run the same seed
+without emptying anything: the `before_seeding.sql` script, then the rows, then
+`after_seeding.sql`, in one transaction.
+
+That is what a seed carrying a *slice* of the database needs — one project, one
+tenant, one customer. Deciding which rows are replaced becomes the seed's own
+job, written in its `before_seeding.sql`:
+
+```sql
+DELETE FROM order_lines WHERE tenant = 'acme';
+DELETE FROM orders      WHERE tenant = 'acme';
+```
+
+A seed written that way is idempotent: applying it installs it, applying it
+again updates it, and nothing outside the slice is ever touched. `db:flush`
+with a `DBAGENT_VIEWPOINT` restricting the database to one tenant is the
+natural way to produce one.
+
+`include_parents` defaults to `false` here, the other way round from `install`:
+a slice is self-contained, and the rows of the seed it inherits from are
+typically already in the database being added to.
 
 ### Seeding with triggers disabled
 

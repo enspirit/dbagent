@@ -5,6 +5,9 @@ module DbAgent
       def install(from, include_parents: true)
       end
 
+      def apply(from, include_parents: false)
+      end
+
       def insert_script(from, include_parents: true)
       end
 

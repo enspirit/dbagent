@@ -29,6 +29,7 @@ module DbAgent
           root/'data/empty',
           root/'data/hooks/child',
           root/'data/hooks',
+          root/'data/slice',
         ].to_set)
       end
     end

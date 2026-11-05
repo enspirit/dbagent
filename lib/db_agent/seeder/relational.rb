@@ -37,6 +37,43 @@ module DbAgent
         end
       end
 
+      # Applies the `from` seed without emptying anything: its before_seeding
+      # scripts, then its rows, then its after_seeding scripts, in a single
+      # transaction. What `insert_script` prints, executed.
+      #
+      # `install` empties every table the seed names before refilling it, which
+      # makes it unusable against a database holding rows the seed is not about
+      # — a production one. `apply` is for a seed that carries a *slice* of the
+      # database (one project, one tenant) and whose before_seeding script
+      # deletes exactly the rows it is about to replace. That makes it
+      # idempotent: applying it twice installs it, then updates it.
+      #
+      # `include_parents` defaults to false, the other way round from `install`:
+      # a slice is self-contained, and its parent's rows are typically already
+      # in the database that is being added to.
+      def apply(from, include_parents: false)
+        seed_folder = data_folder.seed_folder(from)
+        seed_files = seed_folder.seed_files_per_table(include_parents)
+
+        sequel_db.transaction do
+          disable_triggers! if disable_triggers?
+
+          before_seeding!(seed_folder, include_parents)
+
+          seed_files.keys.each do |table|
+            file = seed_files[table]
+            data = file.load
+            raise "Empty file: #{file}" if data.nil?
+            next if data.empty?
+
+            LOGGER.info("Filling table `#{sequel_db.literal(table)}` from #{file}")
+            sequel_db[table].multi_insert(data)
+          end
+
+          after_seeding!(seed_folder, include_parents)
+        end
+      end
+
       def insert_script(from, include_parents: true)
         seed_folder = data_folder.seed_folder(from)
         seed_files = seed_folder.seed_files_per_table(include_parents)

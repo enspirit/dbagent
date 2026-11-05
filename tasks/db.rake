@@ -82,6 +82,13 @@ namespace :db do
   end
   task :seed => :require
 
+  desc "Applies a particular data set without emptying any table"
+  task :apply, :from, :include_parents do |t,args|
+    include_parents = DbAgent.flag?(args[:include_parents], false)
+    db_handler.seeder.apply(args[:from] || 'empty', include_parents: include_parents)
+  end
+  task :apply => :require
+
   desc "Prints an INSERT script for a particular data set"
   task :insert_script, :from, :include_parents do |t,args|
     include_parents = DbAgent.flag?(args[:include_parents])
