@@ -50,6 +50,19 @@ module DbAgent
         shell pg_cmd('psql', config[:database], '<', file.to_s)
       end
 
+      def supports_data_version?
+        true
+      end
+
+      # The WAL insert position: every write to a logged table moves it, and so
+      # does some of the server's own traffic (autovacuum, checkpoints). Writes
+      # to UNLOGGED tables do not go through the WAL and leave it unchanged.
+      def data_version
+        sequel_db.fetch('SELECT pg_current_wal_insert_lsn()::text AS version').first[:version]
+      rescue Sequel::DatabaseError
+        nil
+      end
+
     private
 
       def pg_cmd(cmd, *args)
