@@ -49,6 +49,18 @@ module DbAgent
         shell mysql(config[:database], '<', file.to_s)
       end
 
+      def supports_data_version?
+        false
+      end
+
+      # Candidates: `@@GLOBAL.gtid_executed` with GTIDs on, else the binary log
+      # file and position (`SHOW BINARY LOG STATUS`), both moving only on
+      # committed data changes; neither moves when the binary log is disabled,
+      # which an implementation must detect and answer nil for.
+      def data_version
+        raise NotImplementedError, "No data version on MySQL yet"
+      end
+
       private
 
       def mysql_cmd(cmd, *args)

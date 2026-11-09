@@ -57,6 +57,21 @@ module DbAgent
       fork(config: config.merge(partial_config))
     end
 
+    # Whether this database can hand out a data version (see `data_version`).
+    # Drivers that know how to read one override both methods.
+    def supports_data_version?
+      false
+    end
+
+    # An opaque value identifying the committed state of the database's data:
+    # two equal data versions mean that nothing was written in between, by
+    # anyone. It may change without data changing (the server's own
+    # housekeeping), never the other way round. `nil` when the database cannot
+    # tell, or did not answer.
+    def data_version
+      nil
+    end
+
   private
 
     def wait_timeout_in_seconds

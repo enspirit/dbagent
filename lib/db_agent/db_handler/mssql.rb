@@ -39,6 +39,14 @@ module DbAgent
 
       def restore(t, args)
       end
+
+      def supports_data_version?
+        false
+      end
+
+      def data_version
+        raise NotImplementedError, "No data version on MSSQL yet"
+      end
     end # MSSQL
   end # DbHandler
 end # DbAgent

@@ -38,6 +38,7 @@ See the examples folder for details.
 * `DBAGENT_SUPERUSER_MIGRATIONS_TABLE` The table containing the list of superuser migrations (defaults to `superuser_migrations`)
 * `DBAGENT_IGNORED_FLUSH_FIELDS`.      Fields ignored when db:flush compares data to dump/skip a table
 * `DBAGENT_SEED_DISABLE_TRIGGERS`      Load seeds with triggers & FK checks off (postgres only, see below)
+* `DBAGENT_SEED_SKIP_UNCHANGED`        Skip a seed install when nothing changed since the last one (see below)
 
 ## Available rake tasks
 
@@ -132,6 +133,38 @@ key checks suppressed, referential errors inside a seed load silently, and
 `rake db:seed` / `rake db:check-seeds` stop reporting them. It is PostgreSQL
 only (ignored, with a warning, on other adapters) and setting
 `session_replication_role` requires superuser privileges on most servers.
+
+### Skipping installs that would change nothing
+
+Test runners such as webspicy reinstall a seed before every test case, and many
+test cases write nothing: reads, refused requests. Each of those reinstalls
+rewrites every table of the seed to the state it is already in.
+
+`DBAGENT_SEED_SKIP_UNCHANGED=true` makes `install` skip such an install. It
+relies on the database driver's *data version*: an opaque value that changes
+whenever committed data changes, so that two equal data versions mean nothing
+was written in between, by anyone (the application under test, another dbagent
+process, `rake db:seed`). After each install, the process remembers the seed,
+its files (and when they last changed on disk) and the data version; the next
+install of the same seed, with the same files, is skipped while the data version
+is the same.
+
+| Driver     | Data version                    | Not seen                 |
+|------------|---------------------------------|--------------------------|
+| PostgreSQL | WAL insert position             | writes to `UNLOGGED` tables |
+| MySQL      | none yet: installs never skipped |                         |
+| MSSQL      | none yet: installs never skipped |                         |
+
+The check errs on the safe side: a data version may change without the data
+changing (on PostgreSQL, autovacuum and checkpoints move the WAL too), which
+only makes it install again when it did not need to. Do not enable it when a
+seed fills tables whose writes the driver does not see. A write landing between
+the end of an install and the reading of the data version would be taken as
+part of the seed: harmless for a test runner that waits for the install to
+answer before calling anything else.
+
+It is off by default. On a driver without a data version, it logs a warning and
+always installs. Skipped installs are logged at `INFO` level.
 
 ## Multiple databases mode
 

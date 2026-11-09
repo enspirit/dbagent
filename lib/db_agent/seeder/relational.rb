@@ -12,6 +12,16 @@ module DbAgent
         seed_folder = data_folder.seed_folder(from)
         seed_files = seed_folder.seed_files_per_table(include_parents)
 
+        # The tables a seed fills differ with `include_parents`, and so do the
+        # files `seed_skip` compares: a full install never passes for a partial
+        # one, or the other way round.
+        seed_skip = SeedSkip.current
+        if seed_skip.skippable?(handler, from, seed_files)
+          LOGGER.info("Skipping install of `#{from}`: nothing changed since the last one")
+          return
+        end
+        seed_skip.forget!
+
         sequel_db.transaction do
           disable_triggers! if disable_triggers?
 
@@ -35,6 +45,7 @@ module DbAgent
 
           after_seeding!(seed_folder, include_parents)
         end
+        seed_skip.installed!(handler, from, seed_files)
       end
 
       # Applies the `from` seed without emptying anything: its before_seeding
